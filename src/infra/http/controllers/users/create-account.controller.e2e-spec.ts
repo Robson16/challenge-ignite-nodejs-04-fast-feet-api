@@ -23,6 +23,7 @@ describe('Create account (E2E)', () => {
   test('[POST] /accounts', async () => {
     const response = await request(app.getHttpServer()).post('/accounts').send({
       name: 'John Doe',
+      cpf: '267.859.975-26',
       email: 'jonhdoe@example.com',
       password: '123456',
     })

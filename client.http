@@ -6,6 +6,7 @@ Content-Type: application/json
 
 {
   "name": "Robson",
+  "cpf": "568.362.143-70",
   "email": "robson@example.com",
   "password": "123456"
 }

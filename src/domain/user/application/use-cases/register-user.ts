@@ -1,18 +1,21 @@
 import { Either, left, right } from '@/core/either'
 import { Injectable } from '@nestjs/common'
 import { User } from '../../enterprise/entities/user'
+import { CPF } from '../../enterprise/entities/value-objects/cpf'
 import { HashGenerator } from '../cryptography/hash-generator'
 import { UsersRepository } from '../repositories/users-repository'
+import { InvalidCPFError } from './errors/invalid-cpf-error'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
 interface RegisterUserUseCaseRequest {
   name: string
+  cpf: string
   email: string
   password: string
 }
 
 type RegisterUserUseCaseResponse = Either<
-  UserAlreadyExistsError,
+  UserAlreadyExistsError | InvalidCPFError,
   {
     user: User
   }
@@ -27,9 +30,16 @@ export class RegisterUserUseCase {
 
   async execute({
     name,
+    cpf,
     email,
     password,
   }: RegisterUserUseCaseRequest): Promise<RegisterUserUseCaseResponse> {
+    const isCPFValid = CPF.validate(cpf)
+
+    if (!isCPFValid) {
+      return left(new InvalidCPFError())
+    }
+
     const userWithSameEmail = await this.usersRepository.findByEmail(email)
 
     if (userWithSameEmail) {
@@ -40,6 +50,7 @@ export class RegisterUserUseCase {
 
     const user = User.create({
       name,
+      cpf: CPF.createFromText(cpf),
       email,
       password: hashedPassword,
     })

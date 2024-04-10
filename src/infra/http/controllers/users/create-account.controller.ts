@@ -11,10 +11,12 @@ import {
   UsePipes,
 } from '@nestjs/common'
 import { z } from 'zod'
+
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 
 const createAccountBodySchema = z.object({
   name: z.string(),
+  cpf: z.string(),
   email: z.string().email(),
   password: z.string(),
 })
@@ -30,10 +32,11 @@ export class CreateAccountController {
   @HttpCode(201)
   @UsePipes(new ZodValidationPipe(createAccountBodySchema))
   async handle(@Body() body: CreateAccountBodySchema) {
-    const { name, email, password } = body
+    const { name, cpf, email, password } = body
 
     const result = await this.registerUser.execute({
       name,
+      cpf,
       email,
       password,
     })
