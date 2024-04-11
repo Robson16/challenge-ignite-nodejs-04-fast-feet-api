@@ -25,7 +25,7 @@ describe('Authenticate User', () => {
   it('should be able to authenticate a user', async () => {
     const user = makeUser({
       name: 'John Doe',
-      cpf: new CPF('267.859.975-26'),
+      cpf: CPF.create('267.859.975-26'),
       email: 'jonhdoe@example.com',
       password: await fakeHasher.hash('123456'),
     })

@@ -50,7 +50,7 @@ export class RegisterUserUseCase {
 
     const user = User.create({
       name,
-      cpf: CPF.createFromText(cpf),
+      cpf: CPF.create(cpf),
       email,
       password: hashedPassword,
     })

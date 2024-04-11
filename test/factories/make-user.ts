@@ -13,7 +13,7 @@ export function makeUser(
   const user = User.create(
     {
       name: faker.person.fullName(),
-      cpf: new CPF('267.859.975-26'),
+      cpf: CPF.generate(),
       email: faker.internet.email(),
       password: faker.internet.password(),
       ...override,

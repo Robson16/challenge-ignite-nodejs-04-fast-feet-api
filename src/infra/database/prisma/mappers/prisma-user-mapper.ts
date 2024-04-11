@@ -8,7 +8,7 @@ export class PrismaUserMapper {
     return User.create(
       {
         name: raw.name,
-        cpf: new CPF(raw.cpf),
+        cpf: CPF.create(raw.cpf),
         email: raw.email,
         password: raw.password,
       },
