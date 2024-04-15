@@ -16,6 +16,7 @@ export function makeUser(
       cpf: CPF.generate(),
       email: faker.internet.email(),
       password: faker.internet.password(),
+      role: 'DELIVERER',
       ...override,
     },
     id,

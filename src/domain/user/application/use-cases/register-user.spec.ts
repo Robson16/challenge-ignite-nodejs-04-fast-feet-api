@@ -19,6 +19,7 @@ describe('Register User', () => {
       cpf: '267.859.975-26',
       email: 'jonhdoe@example.com',
       password: '123456',
+      role: 'DELIVERER',
     })
 
     expect(result.isRight()).toBe(true)
@@ -33,6 +34,7 @@ describe('Register User', () => {
       cpf: '267.859.975-26',
       email: 'jonhdoe@example.com',
       password: '123456',
+      role: 'DELIVERER',
     })
 
     const hashedPassword = await fakeHasher.hash('123456')
