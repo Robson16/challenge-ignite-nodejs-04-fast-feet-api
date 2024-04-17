@@ -1,9 +1,9 @@
+import { CPF } from '@/domain/user/enterprise/entities/value-objects/cpf'
 import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { AuthenticateUserUseCase } from './authenticate-user'
-import { CPF } from '../../enterprise/entities/value-objects/cpf'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let fakeHasher: FakeHasher
@@ -24,9 +24,7 @@ describe('Authenticate User', () => {
 
   it('should be able to authenticate a user', async () => {
     const user = makeUser({
-      name: 'John Doe',
       cpf: CPF.create('267.859.975-26'),
-      email: 'jonhdoe@example.com',
       password: await fakeHasher.hash('123456'),
     })
 
