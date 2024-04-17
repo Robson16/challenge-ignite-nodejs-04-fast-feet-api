@@ -1,4 +1,6 @@
+import { CPF } from '@/domain/user/enterprise/entities/value-objects/cpf'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
+import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { InvalidCPFError } from './errors/invalid-cpf-error'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
@@ -59,13 +61,11 @@ describe('Register User', () => {
   })
 
   it('should not be able to register with CPF already in use', async () => {
-    await sut.execute({
-      name: 'Joe Six-Pack',
-      cpf: '267.859.975-26',
-      email: 'joesixpack@example.com',
-      password: '123456',
-      role: 'DELIVERER',
+    const user = makeUser({
+      cpf: CPF.create('267.859.975-26'),
     })
+
+    await inMemoryUsersRepository.create(user)
 
     const result = await sut.execute({
       name: 'John Doe',
@@ -81,13 +81,11 @@ describe('Register User', () => {
 })
 
 it('should not be able to register with Email already in use', async () => {
-  await sut.execute({
-    name: 'John Doe',
-    cpf: '667.316.070-53',
+  const user = makeUser({
     email: 'jonhdoe@example.com',
-    password: '123456',
-    role: 'DELIVERER',
   })
+
+  await inMemoryUsersRepository.create(user)
 
   const result = await sut.execute({
     name: 'John Doe',
