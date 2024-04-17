@@ -1,7 +1,7 @@
 import { Either, left, right } from '@/core/either'
+import { User, UserRole } from '@/domain/user/enterprise/entities/user'
+import { CPF } from '@/domain/user/enterprise/entities/value-objects/cpf'
 import { Injectable } from '@nestjs/common'
-import { User } from '../../enterprise/entities/user'
-import { CPF } from '../../enterprise/entities/value-objects/cpf'
 import { HashGenerator } from '../cryptography/hash-generator'
 import { UsersRepository } from '../repositories/users-repository'
 import { InvalidCPFError } from './errors/invalid-cpf-error'
@@ -13,7 +13,7 @@ interface RegisterUserUseCaseRequest {
   cpf: string
   email: string
   password: string
-  role: string
+  role?: UserRole
 }
 
 type RegisterUserUseCaseResponse = Either<
@@ -30,6 +30,26 @@ export class RegisterUserUseCase {
     private hashGenerator: HashGenerator,
   ) {}
 
+  private async isCPFValid(cpf: string): Promise<boolean> {
+    return CPF.validate(cpf)
+  }
+
+  private async userExistsWithCPF(cpf: string): Promise<boolean> {
+    const user = await this.usersRepository.findByCPF(cpf)
+
+    return !!user
+  }
+
+  private async userExistsWithEmail(email: string): Promise<boolean> {
+    const user = await this.usersRepository.findByEmail(email)
+
+    return !!user
+  }
+
+  private isValidRole(role: UserRole): boolean {
+    return role === 'ADMIN' || role === 'DELIVERER'
+  }
+
   async execute({
     name,
     cpf,
@@ -37,25 +57,19 @@ export class RegisterUserUseCase {
     password,
     role,
   }: RegisterUserUseCaseRequest): Promise<RegisterUserUseCaseResponse> {
-    const isCPFValid = CPF.validate(cpf)
-
-    if (!isCPFValid) {
+    if (!(await this.isCPFValid(cpf))) {
       return left(new InvalidCPFError())
     }
 
-    const userWithSameCPF = await this.usersRepository.findByCPF(cpf)
-
-    if (userWithSameCPF) {
+    if (await this.userExistsWithCPF(cpf)) {
       return left(new UserAlreadyExistsError(cpf))
     }
 
-    const userWithSameEmail = await this.usersRepository.findByEmail(email)
-
-    if (userWithSameEmail) {
+    if (await this.userExistsWithEmail(email)) {
       return left(new UserAlreadyExistsError(email))
     }
 
-    if (!(role === 'ADMIN' || role === 'DELIVERER')) {
+    if (role && !this.isValidRole(role)) {
       return left(new InvalidUserRole(role))
     }
 
