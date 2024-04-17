@@ -78,23 +78,23 @@ describe('Register User', () => {
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
-})
 
-it('should not be able to register with Email already in use', async () => {
-  const user = makeUser({
-    email: 'jonhdoe@example.com',
+  it('should not be able to register with Email already in use', async () => {
+    const user = makeUser({
+      email: 'jonhdoe@example.com',
+    })
+
+    await inMemoryUsersRepository.create(user)
+
+    const result = await sut.execute({
+      name: 'John Doe',
+      cpf: '267.859.975-26',
+      email: 'jonhdoe@example.com',
+      password: '123456',
+      role: 'DELIVERER',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
-
-  await inMemoryUsersRepository.create(user)
-
-  const result = await sut.execute({
-    name: 'John Doe',
-    cpf: '267.859.975-26',
-    email: 'jonhdoe@example.com',
-    password: '123456',
-    role: 'DELIVERER',
-  })
-
-  expect(result.isLeft()).toBe(true)
-  expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
 })
