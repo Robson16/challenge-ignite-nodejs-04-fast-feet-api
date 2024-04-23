@@ -1,5 +1,9 @@
+import { CPF } from '@/domain/user/enterprise/entities/value-objects/cpf'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
+import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
+import { InvalidCPFError } from './errors/invalid-cpf-error'
+import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 import { RegisterUserUseCase } from './register-user'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
@@ -19,6 +23,7 @@ describe('Register User', () => {
       cpf: '267.859.975-26',
       email: 'jonhdoe@example.com',
       password: '123456',
+      role: 'DELIVERER',
     })
 
     expect(result.isRight()).toBe(true)
@@ -33,11 +38,63 @@ describe('Register User', () => {
       cpf: '267.859.975-26',
       email: 'jonhdoe@example.com',
       password: '123456',
+      role: 'DELIVERER',
     })
 
     const hashedPassword = await fakeHasher.hash('123456')
 
     expect(result.isRight()).toBe(true)
     expect(inMemoryUsersRepository.items[0].password).toEqual(hashedPassword)
+  })
+
+  it('should not be able to register with an invalid CPF', async () => {
+    const result = await sut.execute({
+      name: 'John Doe',
+      cpf: 'invalid-cfp-number',
+      email: 'jonhdoe@example.com',
+      password: '123456',
+      role: 'DELIVERER',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(InvalidCPFError)
+  })
+
+  it('should not be able to register with CPF already in use', async () => {
+    const user = makeUser({
+      cpf: CPF.create('267.859.975-26'),
+    })
+
+    await inMemoryUsersRepository.create(user)
+
+    const result = await sut.execute({
+      name: 'John Doe',
+      cpf: '267.859.975-26',
+      email: 'jonhdoe@example.com',
+      password: '123456',
+      role: 'DELIVERER',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
+  })
+
+  it('should not be able to register with Email already in use', async () => {
+    const user = makeUser({
+      email: 'jonhdoe@example.com',
+    })
+
+    await inMemoryUsersRepository.create(user)
+
+    const result = await sut.execute({
+      name: 'John Doe',
+      cpf: '267.859.975-26',
+      email: 'jonhdoe@example.com',
+      password: '123456',
+      role: 'DELIVERER',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
   })
 })

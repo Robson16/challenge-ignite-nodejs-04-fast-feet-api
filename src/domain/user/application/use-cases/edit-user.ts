@@ -1,4 +1,6 @@
 import { Either, left, right } from '@/core/either'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { User, UserRole } from '@/domain/user/enterprise/entities/user'
 import { CPF } from '@/domain/user/enterprise/entities/value-objects/cpf'
 import { Injectable } from '@nestjs/common'
@@ -8,23 +10,27 @@ import { InvalidCPFError } from './errors/invalid-cpf-error'
 import { InvalidUserRole } from './errors/invalid-user-role'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
-interface RegisterUserUseCaseRequest {
-  name: string
-  cpf: string
-  email: string
-  password: string
+interface EditUserUseCaseRequest {
+  userId: string
+  name?: string
+  cpf?: string
+  email?: string
+  password?: string
   role?: UserRole
 }
 
-type RegisterUserUseCaseResponse = Either<
-  UserAlreadyExistsError | InvalidCPFError | InvalidUserRole,
+type EditUserUseCaseResponse = Either<
+  | ResourceNotFoundError
+  | UserAlreadyExistsError
+  | InvalidCPFError
+  | InvalidUserRole,
   {
     user: User
   }
 >
 
 @Injectable()
-export class RegisterUserUseCase {
+export class EditUserUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private hashGenerator: HashGenerator,
@@ -51,21 +57,28 @@ export class RegisterUserUseCase {
   }
 
   async execute({
+    userId,
     name,
     cpf,
     email,
     password,
     role,
-  }: RegisterUserUseCaseRequest): Promise<RegisterUserUseCaseResponse> {
-    if (!(await this.isCPFValid(cpf))) {
+  }: EditUserUseCaseRequest): Promise<EditUserUseCaseResponse> {
+    const user = await this.usersRepository.findById(userId)
+
+    if (!user) {
+      return left(new ResourceNotFoundError())
+    }
+
+    if (cpf && !(await this.isCPFValid(cpf))) {
       return left(new InvalidCPFError())
     }
 
-    if (await this.userExistsWithCPF(cpf)) {
+    if (cpf && (await this.userExistsWithCPF(cpf))) {
       return left(new UserAlreadyExistsError(cpf))
     }
 
-    if (await this.userExistsWithEmail(email)) {
+    if (email && (await this.userExistsWithEmail(email))) {
       return left(new UserAlreadyExistsError(email))
     }
 
@@ -73,20 +86,25 @@ export class RegisterUserUseCase {
       return left(new InvalidUserRole(role))
     }
 
-    const hashedPassword = await this.hashGenerator.hash(password)
+    const hashedPassword = password
+      ? await this.hashGenerator.hash(password)
+      : user.password
 
-    const user = User.create({
-      name,
-      cpf: CPF.create(cpf),
-      email,
-      password: hashedPassword,
-      role,
-    })
+    const updatedUser = User.create(
+      {
+        name: name || user.name,
+        cpf: cpf ? CPF.create(cpf) : user.cpf,
+        email: email || user.email,
+        password: hashedPassword,
+        role: role || user.role,
+      },
+      new UniqueEntityID(userId),
+    )
 
-    await this.usersRepository.create(user)
+    await this.usersRepository.save(updatedUser)
 
     return right({
-      user,
+      user: updatedUser,
     })
   }
 }
