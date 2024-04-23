@@ -3,7 +3,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { CPF } from './value-objects/cpf'
 
-export type UserRole = 'ADMIN' | 'DELIVERER'
+export type UserRole = 'ADMIN' | 'DELIVERER' | 'RECIPIENT'
 
 export interface UserProps {
   name: string
