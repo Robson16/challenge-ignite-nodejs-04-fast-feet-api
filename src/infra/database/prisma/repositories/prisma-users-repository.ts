@@ -8,6 +8,20 @@ import { PrismaService } from '../prisma.service'
 export class PrismaUsersRepository implements UsersRepository {
   constructor(private prisma: PrismaService) {}
 
+  async findById(id: string): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    if (!user) {
+      return null
+    }
+
+    return PrismaUserMapper.toDomain(user)
+  }
+
   async findByCPF(cpf: string): Promise<User | null> {
     const user = await this.prisma.user.findUnique({
       where: {
@@ -40,6 +54,17 @@ export class PrismaUsersRepository implements UsersRepository {
     const data = PrismaUserMapper.toPrisma(user)
 
     await this.prisma.user.create({
+      data,
+    })
+  }
+
+  async save(user: User): Promise<void> {
+    const data = PrismaUserMapper.toPrisma(user)
+
+    await this.prisma.user.update({
+      where: {
+        id: data.id,
+      },
       data,
     })
   }
