@@ -1,8 +1,10 @@
-import { Either, right } from '@/core/either'
+import { Either, left, right } from '@/core/either'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { Destination } from '@/domain/order/enterprise/entities/destination'
+import { UsersRepository } from '@/domain/user/application/repositories/users-repository'
 import { Injectable } from '@nestjs/common'
-import { DestinationRepository } from '../repositories/destination-repository'
+import { DestinationsRepository } from '../repositories/destinations-repository'
 
 interface CreateDestinationUseCaseRequest {
   recipientId: string
@@ -12,7 +14,7 @@ interface CreateDestinationUseCaseRequest {
 }
 
 type CreateDestinationUseCaseResponse = Either<
-  null,
+  ResourceNotFoundError,
   {
     destination: Destination
   }
@@ -20,7 +22,10 @@ type CreateDestinationUseCaseResponse = Either<
 
 @Injectable()
 export class CreateDestinationUseCase {
-  constructor(private destinationRepository: DestinationRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private destinationsRepository: DestinationsRepository,
+  ) {}
 
   async execute({
     recipientId,
@@ -28,6 +33,12 @@ export class CreateDestinationUseCase {
     latitude,
     longitude,
   }: CreateDestinationUseCaseRequest): Promise<CreateDestinationUseCaseResponse> {
+    const isRecipientExistent = await this.usersRepository.findById(recipientId)
+
+    if (!isRecipientExistent) {
+      return left(new ResourceNotFoundError())
+    }
+
     const destination = Destination.create({
       recipientId: new UniqueEntityID(recipientId),
       title,
@@ -35,7 +46,7 @@ export class CreateDestinationUseCase {
       longitude,
     })
 
-    await this.destinationRepository.create(destination)
+    await this.destinationsRepository.create(destination)
 
     return right({
       destination,
