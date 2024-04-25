@@ -2,10 +2,16 @@ import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 
+export type PacketStatus =
+  | 'DELIVERED'
+  | 'RETURNED'
+  | 'WITHDRAWAL'
+  | 'AWAITING_WITHDRAWAL'
+
 export interface PacketProps {
   destinationId: UniqueEntityID
   delivererId: UniqueEntityID
-  status: string
+  status: PacketStatus
   createdAt: Date
   updatedAt?: Date | null
 }
@@ -32,11 +38,15 @@ export class Packet extends Entity<PacketProps> {
   }
 
   static create(
-    props: Optional<PacketProps, 'createdAt'>,
+    props: Optional<PacketProps, 'status' | 'createdAt'>,
     id?: UniqueEntityID,
   ) {
     const packet = new Packet(
-      { ...props, createdAt: props.createdAt ?? new Date() },
+      {
+        ...props,
+        status: props.status ?? 'AWAITING_WITHDRAWAL',
+        createdAt: props.createdAt ?? new Date(),
+      },
       id,
     )
 
