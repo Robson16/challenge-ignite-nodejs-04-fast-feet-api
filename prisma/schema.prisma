@@ -29,11 +29,18 @@ model User {
   @@map("users")
 }
 
+enum PacketStatus {
+  DELIVERED
+  RETURNED
+  WITHDRAWAL
+  AWAITING_WITHDRAWAL
+}
+
 model Packet {
-  id        String    @id @default(uuid())
-  status    String
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
+  id        String       @id @default(uuid())
+  status    PacketStatus @default(AWAITING_WITHDRAWAL)
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime?    @updatedAt @map("updated_at")
 
   destination    Destination @relation(fields: [destination_id], references: [id])
   destination_id String
