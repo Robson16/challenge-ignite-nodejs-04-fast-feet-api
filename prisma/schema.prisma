@@ -10,6 +10,7 @@ datasource db {
 enum UserRole {
   ADMIN
   DELIVERER
+  RECIPIENT
 }
 
 model User {
@@ -20,5 +21,39 @@ model User {
   password String
   role     UserRole @default(DELIVERER)
 
+  packets     Packet[]
+  destination Destination[]
+
   @@map("users")
+}
+
+model Packet {
+  id        String    @id @default(uuid())
+  status    String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  destination    Destination @relation(fields: [destination_id], references: [id])
+  destination_id String
+
+  deliverer    User   @relation(fields: [deliverer_id], references: [id])
+  deliverer_id String
+
+  @@map("packets")
+}
+
+model Destination {
+  id        String    @id @default(uuid())
+  title     String
+  latitude  Decimal
+  longitude Decimal
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  recipient    User   @relation(fields: [recipient_id], references: [id])
+  recipient_id String
+
+  packets Packet[]
+
+  @@map("destinations")
 }
