@@ -3,6 +3,7 @@ import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { InvalidCPFError } from './errors/invalid-cpf-error'
+import { InvalidUserRole } from './errors/invalid-user-role'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 import { RegisterUserUseCase } from './register-user'
 
@@ -96,5 +97,18 @@ describe('Register User', () => {
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
+  })
+
+  it('should not be able to register a user with an invalid role', async () => {
+    const result = await sut.execute({
+      name: 'John Doe',
+      cpf: '267.859.975-26',
+      email: 'jonhdoe@example.com',
+      password: '123456',
+      role: 'INVALID-ROLE',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(InvalidUserRole)
   })
 })
