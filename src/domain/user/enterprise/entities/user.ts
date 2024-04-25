@@ -10,7 +10,9 @@ export interface UserProps {
   cpf: CPF
   email: string
   password: string
-  role?: UserRole
+  role: UserRole
+  createdAt: Date
+  updatedAt?: Date | null
 }
 
 export class User extends Entity<UserProps> {
@@ -18,20 +20,62 @@ export class User extends Entity<UserProps> {
     return this.props.name
   }
 
+  set name(name: string) {
+    this.props.name = name
+
+    this.touch()
+  }
+
   get cpf() {
     return this.props.cpf
+  }
+
+  set cpf(cpf: CPF) {
+    this.props.cpf = cpf
+
+    this.touch()
   }
 
   get email() {
     return this.props.email
   }
 
+  set email(email: string) {
+    this.props.email = email
+
+    this.touch()
+  }
+
   get password() {
     return this.props.password
   }
 
+  set password(password: string) {
+    this.props.password = password
+
+    this.touch()
+  }
+
   get role() {
     return this.props.role
+  }
+
+  set role(role: UserRole) {
+    this.props.role = role
+
+    this.touch()
+  }
+
+  get createdAt() {
+    return this.props.createdAt
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt
+  }
+
+  private touch() {
+    this.props.updatedAt = new Date()
   }
 
   static create(props: Optional<UserProps, 'role'>, id?: UniqueEntityID) {
