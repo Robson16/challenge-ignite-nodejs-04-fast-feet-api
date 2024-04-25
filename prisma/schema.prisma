@@ -14,12 +14,14 @@ enum UserRole {
 }
 
 model User {
-  id       String   @id @default(uuid())
-  name     String
-  cpf      String   @unique @default("")
-  email    String   @unique
-  password String
-  role     UserRole @default(DELIVERER)
+  id        String    @id @default(uuid())
+  name      String
+  cpf       String    @unique @default("")
+  email     String    @unique
+  password  String
+  role      UserRole  @default(DELIVERER)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 
   packets     Packet[]
   destination Destination[]

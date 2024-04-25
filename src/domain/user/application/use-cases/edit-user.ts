@@ -90,21 +90,16 @@ export class EditUserUseCase {
       ? await this.hashGenerator.hash(password)
       : user.password
 
-    const updatedUser = User.create(
-      {
-        name: name || user.name,
-        cpf: cpf ? CPF.create(cpf) : user.cpf,
-        email: email || user.email,
-        password: hashedPassword,
-        role: role || user.role,
-      },
-      new UniqueEntityID(userId),
-    )
+    user.name = name || user.name
+    user.cpf = cpf ? CPF.create(cpf) : user.cpf
+    user.email = email || user.email
+    user.password = hashedPassword
+    user.role = role || user.role
 
-    await this.usersRepository.save(updatedUser)
+    await this.usersRepository.save(user)
 
     return right({
-      user: updatedUser,
+      user,
     })
   }
 }
