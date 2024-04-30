@@ -24,12 +24,12 @@ describe('Edit User', () => {
 
     const result = await sut.execute({
       userId: user.id.toString(),
-      password: '654321',
+      name: 'John Doe',
     })
 
     expect(result.isRight()).toBe(true)
     expect(inMemoryUsersRepository.items[0]).toMatchObject({
-      password: '654321-hashed',
+      name: 'John Doe',
     })
   })
 
