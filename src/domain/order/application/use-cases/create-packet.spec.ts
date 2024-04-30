@@ -5,6 +5,7 @@ import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-dest
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { CreatePacketUseCase } from './create-packet'
+import { InvalidPacketStatus } from './errors/invalid-packet-status'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
@@ -70,5 +71,22 @@ describe('Create Packet', () => {
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+  })
+
+  it('should not be able to create a packet with an invalid status', async () => {
+    const destination = makeDestination()
+    const deliverer = makeUser()
+
+    await inMemoryDestinationsRepository.create(destination)
+    await inMemoryUsersRepository.create(deliverer)
+
+    const result = await sut.execute({
+      destinationId: destination.id.toString(),
+      delivererId: deliverer.id.toString(),
+      status: 'INVALID-STATUS',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(InvalidPacketStatus)
   })
 })
