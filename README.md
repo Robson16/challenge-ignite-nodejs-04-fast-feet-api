@@ -19,8 +19,11 @@ Nesse desafio foi desenvolvido uma API para controle de encomendas de uma transp
 - [ ] CRUD de **Encomendas**:
   - [X] Create;
   - [ ] Read;
-     - [ ] Deve ser possível listar as encomendas com endereços de entrega 
-           próximo ao local do entregador;
+    - [X] Deve ser possivel listar encomendas Aguardando Retirada 
+    - [ ] Deve ser possivel listar encomendas Retiradas pelo Entregador 
+    - [ ] Deve ser possivel filtrar as encomendas por bairro
+    - [ ] Deve ser possível listar as encomendas com endereços de entrega 
+          próximo ao local do entregador;
   - [ ] Update;
      - [ ] Deve ser possível marcar uma encomenda como Entregue;
      - [ ] Deve ser possível marcar uma encomenda como Devolvida;

@@ -1,3 +1,4 @@
+import { PaginationParams } from '@/core/repositories/pagination-params'
 import { PacketsRepository } from '@/domain/order/application/repositories/packets-repository'
 import { Packet } from '@/domain/order/enterprise/entities/packet'
 
@@ -12,6 +13,12 @@ export class InMemoryPacketsRepository implements PacketsRepository {
     }
 
     return packet
+  }
+
+  async findManyAwaiting({ page }: PaginationParams) {
+    const packets = this.items.slice((page - 1) * 20, page * 20)
+
+    return packets
   }
 
   async create(packet: Packet) {
