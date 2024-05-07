@@ -7,9 +7,7 @@ export function makePacket(
 ): Packet {
   const packet = Packet.create(
     {
-      delivererId: new UniqueEntityID(),
       destinationId: new UniqueEntityID(),
-      status: 'AWAITING_WITHDRAWAL',
       ...override,
     },
     id,

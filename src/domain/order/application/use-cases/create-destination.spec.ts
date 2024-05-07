@@ -27,6 +27,13 @@ describe('Create Destination', () => {
     const result = await sut.execute({
       recipientId: user.id.toString(),
       title: faker.lorem.word(),
+      addressStreet: faker.location.street(),
+      addressNumber: faker.number.int({ min: 1, max: 9999 }).toString(),
+      addressComplement: faker.location.secondaryAddress(),
+      addressZipCode: faker.location.zipCode(),
+      addressNeighborhood: faker.location.county(),
+      addressCity: faker.location.city(),
+      addressState: faker.location.state(),
       latitude: faker.location.latitude(),
       longitude: faker.location.longitude(),
     })
@@ -41,6 +48,13 @@ describe('Create Destination', () => {
     const result = await sut.execute({
       recipientId: 'invalid-recipient-id',
       title: faker.lorem.word(),
+      addressStreet: faker.location.street(),
+      addressNumber: faker.number.int({ min: 1, max: 9999 }).toString(),
+      addressComplement: faker.location.secondaryAddress(),
+      addressZipCode: faker.location.zipCode(),
+      addressNeighborhood: faker.location.county(),
+      addressCity: faker.location.city(),
+      addressState: faker.location.state(),
       latitude: faker.location.latitude(),
       longitude: faker.location.longitude(),
     })

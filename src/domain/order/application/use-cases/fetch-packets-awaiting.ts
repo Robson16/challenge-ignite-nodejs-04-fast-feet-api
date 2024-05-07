@@ -1,7 +1,7 @@
 import { Either, right } from '@/core/either'
+import { PacketsRepository } from '@/domain/order/application/repositories/packets-repository'
 import { Packet } from '@/domain/order/enterprise/entities/packet'
 import { Injectable } from '@nestjs/common'
-import { PacketsRepository } from '../repositories/packets-repository'
 
 interface FetchPacketsAwaitingUseCaseRequest {
   page: number

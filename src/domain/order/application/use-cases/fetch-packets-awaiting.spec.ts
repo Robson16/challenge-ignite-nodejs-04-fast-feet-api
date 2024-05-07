@@ -1,13 +1,18 @@
 import { makePacket } from 'test/factories/make-packet'
+import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
 import { FetchPacketsAwaitingUseCase } from './fetch-packets-awaiting'
 
+let inMemoryDestinationsRepository: InMemoryDestinationsRepository
 let inMemoryPacketsRepository: InMemoryPacketsRepository
 let sut: FetchPacketsAwaitingUseCase // Subject Under Test
 
 describe('Fetch Packets Awaiting', () => {
   beforeEach(() => {
-    inMemoryPacketsRepository = new InMemoryPacketsRepository()
+    inMemoryDestinationsRepository = new InMemoryDestinationsRepository()
+    inMemoryPacketsRepository = new InMemoryPacketsRepository(
+      inMemoryDestinationsRepository,
+    )
     sut = new FetchPacketsAwaitingUseCase(inMemoryPacketsRepository)
   })
 

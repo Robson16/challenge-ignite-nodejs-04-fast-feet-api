@@ -18,17 +18,20 @@ Nesse desafio foi desenvolvido uma API para controle de encomendas de uma transp
 
 - [ ] CRUD de **Encomendas**:
   - [X] Create;
+    - [X] As Encomendas devem ter os tipos de status: 
+          Aguardando Retirada, Retirada, Devolvida e Entregue;
+    - [X] O status Aguardando Retirada deve ser o valor inicial/padrão
   - [ ] Read;
-    - [X] Deve ser possivel listar encomendas Aguardando Retirada 
-    - [ ] Deve ser possivel listar encomendas Retiradas pelo Entregador 
-    - [ ] Deve ser possivel filtrar as encomendas por bairro
-    - [ ] Deve ser possível listar as encomendas com endereços de entrega 
+    - [X] Deve ser possivel listar encomendas Aguardando Retirada
+    - [X] Deve ser possivel listar encomendas Retiradas pelo Entregador
+    - [X] Deve ser possivel filtrar as encomendas por bairro
+    - [ ] Deve ser possível listar as encomendas com endereços de entrega
           próximo ao local do entregador;
   - [ ] Update;
-     - [ ] Deve ser possível marcar uma encomenda como Entregue;
-     - [ ] Deve ser possível marcar uma encomenda como Devolvida;
      - [ ] Deve ser possível marcar uma encomenda como Aguardando Retirada;
-     - [ ] Deve ser possível marcar uma encomenda como Retirada;
+     - [X] Deve ser possível marcar uma encomenda como Retirada;
+     - [ ] Deve ser possível marcar uma encomenda como Devolvida;
+     - [ ] Deve ser possível marcar uma encomenda como Entregue;
      - [ ] Deve ser possível notificar o destinatário a cada 
            alteração no status da encomenda;
   - [ ] Delete;

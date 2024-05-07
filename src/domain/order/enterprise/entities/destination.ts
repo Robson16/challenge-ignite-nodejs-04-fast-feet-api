@@ -5,6 +5,14 @@ import { Optional } from '@/core/types/optional'
 export interface DestinationProps {
   recipientId: UniqueEntityID
   title: string
+  addressStreet: string
+  addressNumber: string
+  addressComplement: string
+  addressZipCode: string
+  addressNeighborhood: string
+  addressCity: string
+  addressState: string
+  addressCountry?: string
   latitude: number
   longitude: number
   createdAt: Date
@@ -18,6 +26,38 @@ export class Destination extends Entity<DestinationProps> {
 
   get title() {
     return this.props.title
+  }
+
+  get addressStreet() {
+    return this.props.addressStreet
+  }
+
+  get addressNumber() {
+    return this.props.addressNumber
+  }
+
+  get addressComplement() {
+    return this.props.addressComplement
+  }
+
+  get addressZipCode() {
+    return this.props.addressZipCode
+  }
+
+  get addressNeighborhood() {
+    return this.props.addressNeighborhood
+  }
+
+  get addressCity() {
+    return this.props.addressCity
+  }
+
+  get addressState() {
+    return this.props.addressState
+  }
+
+  get addressCountry() {
+    return this.props.addressCountry
   }
 
   get latitude() {
@@ -37,11 +77,15 @@ export class Destination extends Entity<DestinationProps> {
   }
 
   static create(
-    props: Optional<DestinationProps, 'createdAt'>,
+    props: Optional<DestinationProps, 'addressCountry' | 'createdAt'>,
     id?: UniqueEntityID,
   ) {
     const destination = new Destination(
-      { ...props, createdAt: props.createdAt ?? new Date() },
+      {
+        ...props,
+        addressCountry: props.addressCountry ?? 'Brazil',
+        createdAt: props.createdAt ?? new Date(),
+      },
       id,
     )
 
