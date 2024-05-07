@@ -1,6 +1,5 @@
 import { UserAlreadyExistsError } from '@/domain/user/application/use-cases/errors/user-already-exists-error'
 import { RegisterUserUseCase } from '@/domain/user/application/use-cases/register-user'
-import { UserRole } from '@/domain/user/enterprise/entities/user'
 import { Public } from '@/infra/auth/public'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import {
@@ -19,10 +18,7 @@ const createAccountBodySchema = z.object({
   cpf: z.string(),
   email: z.string().email(),
   password: z.string(),
-  role: z
-    .enum(['ADMIN', 'DELIVERER'] as const)
-    .optional()
-    .default('DELIVERER' as UserRole),
+  role: z.string().optional().default('DELIVERER'),
 })
 
 type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>

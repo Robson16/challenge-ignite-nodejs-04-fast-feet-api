@@ -2,15 +2,14 @@ import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { CPF } from './value-objects/cpf'
-
-export type UserRole = 'ADMIN' | 'DELIVERER' | 'RECIPIENT'
+import { Role } from './value-objects/role'
 
 export interface UserProps {
   name: string
   cpf: CPF
   email: string
   password: string
-  role: UserRole
+  role: Role
   createdAt: Date
   updatedAt?: Date | null
 }
@@ -60,7 +59,7 @@ export class User extends Entity<UserProps> {
     return this.props.role
   }
 
-  set role(role: UserRole) {
+  set role(role: Role) {
     this.props.role = role
 
     this.touch()
@@ -85,7 +84,7 @@ export class User extends Entity<UserProps> {
     const user = new User(
       {
         ...props,
-        role: props.role ?? 'DELIVERER',
+        role: props.role ?? new Role('DELIVERER'),
         createdAt: props.createdAt ?? new Date(),
       },
       id,

@@ -1,6 +1,7 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { User, UserProps } from '@/domain/user/enterprise/entities/user'
 import { CPF } from '@/domain/user/enterprise/entities/value-objects/cpf'
+import { Role } from '@/domain/user/enterprise/entities/value-objects/role'
 import { faker } from '@faker-js/faker'
 
 export function makeUser(
@@ -13,7 +14,7 @@ export function makeUser(
       cpf: CPF.generate(),
       email: faker.internet.email(),
       password: faker.internet.password(),
-      role: 'DELIVERER',
+      role: Role.create('DELIVERER'),
       ...override,
     },
     id,

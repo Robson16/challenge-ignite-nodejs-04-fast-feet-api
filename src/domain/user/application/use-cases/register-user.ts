@@ -1,6 +1,7 @@
 import { Either, left, right } from '@/core/either'
-import { User, UserRole } from '@/domain/user/enterprise/entities/user'
+import { User } from '@/domain/user/enterprise/entities/user'
 import { CPF } from '@/domain/user/enterprise/entities/value-objects/cpf'
+import { Role } from '@/domain/user/enterprise/entities/value-objects/role'
 import { Injectable } from '@nestjs/common'
 import { HashGenerator } from '../cryptography/hash-generator'
 import { UsersRepository } from '../repositories/users-repository'
@@ -13,7 +14,7 @@ interface RegisterUserUseCaseRequest {
   cpf: string
   email: string
   password: string
-  role?: UserRole
+  role?: string
 }
 
 type RegisterUserUseCaseResponse = Either<
@@ -46,8 +47,8 @@ export class RegisterUserUseCase {
     return !!user
   }
 
-  private isValidRole(role: UserRole): boolean {
-    return role === 'ADMIN' || role === 'DELIVERER'
+  private isValidRole(role: string): boolean {
+    return Role.validate(role)
   }
 
   async execute({
@@ -80,7 +81,7 @@ export class RegisterUserUseCase {
       cpf: CPF.create(cpf),
       email,
       password: hashedPassword,
-      role,
+      role: role ? new Role(role) : undefined,
     })
 
     await this.usersRepository.create(user)
