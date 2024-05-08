@@ -10,7 +10,7 @@ export type PacketStatus =
 
 export interface PacketProps {
   destinationId: UniqueEntityID
-  delivererId?: UniqueEntityID | null
+  delivererId?: UniqueEntityID
   status: PacketStatus
   createdAt: Date
   updatedAt?: Date | null
@@ -25,7 +25,7 @@ export class Packet extends Entity<PacketProps> {
     return this.props.delivererId
   }
 
-  set delivererId(delivererId: UniqueEntityID | undefined | null) {
+  set delivererId(delivererId: UniqueEntityID | undefined) {
     this.props.delivererId = delivererId
 
     this.touch()

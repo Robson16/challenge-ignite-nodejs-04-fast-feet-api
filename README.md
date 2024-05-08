@@ -31,7 +31,7 @@ Nesse desafio foi desenvolvido uma API para controle de encomendas de uma transp
      - [X] Deve ser possível marcar uma encomenda como Aguardando Retirada; 
      - [X] Deve ser possível marcar uma encomenda como Retirada;
      - [X] Deve ser possível marcar uma encomenda como Devolvida;
-     - [ ] Deve ser possível marcar uma encomenda como Entregue;
+     - [X] Deve ser possível marcar uma encomenda como Entregue;
      - [ ] Deve ser possível notificar o destinatário a cada 
            alteração no status da encomenda;
   - [ ] Delete;
@@ -52,8 +52,8 @@ Nesse desafio foi desenvolvido uma API para controle de encomendas de uma transp
 - [ ] Somente usuário do tipo Administrador pode realizar
   operações de CRUD dos Destinos
 - [ ] Para marcar uma encomenda como entregue é obrigatório o envio de uma foto
-- [ ] Somente o Entregador que retirou a Encomenda pode marcar ela como Entregue
-- [ ] Não deve ser possível um Entregador listar as Encomendas de outro Entregador
+- [X] Somente o Entregador que retirou a Encomenda pode marcar ela como Entregue
+- [X] Não deve ser possível um Entregador listar as Encomendas de outro Entregador
 
 ### Contexto da aplicação
 
