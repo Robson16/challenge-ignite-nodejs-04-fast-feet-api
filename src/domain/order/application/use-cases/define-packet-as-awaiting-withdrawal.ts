@@ -1,4 +1,5 @@
 import { Either, left, right } from '@/core/either'
+import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { PacketsRepository } from '@/domain/order/application/repositories/packets-repository'
 import { Packet } from '@/domain/order/enterprise/entities/packet'
@@ -9,7 +10,7 @@ interface DefinePacketAsAwaitingWithdrawalUseCaseRequest {
 }
 
 type DefinePacketAsAwaitingWithdrawalUseCaseResponse = Either<
-  ResourceNotFoundError,
+  ResourceNotFoundError | NotAllowedError,
   {
     packet: Packet
   }
@@ -32,9 +33,7 @@ export class DefinePacketAsAwaitingWithdrawalUseCase {
       packet.status === 'AWAITING_WITHDRAWAL' &&
       packet.delivererId === undefined
     ) {
-      return right({
-        packet,
-      })
+      return left(new NotAllowedError('Packet already awaiting withdrawal'))
     }
 
     packet.delivererId = undefined

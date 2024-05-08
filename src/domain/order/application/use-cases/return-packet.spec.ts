@@ -1,3 +1,4 @@
+import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { makePacket } from 'test/factories/make-packet'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
@@ -42,5 +43,21 @@ describe('Return Packet', () => {
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)
+  })
+
+  it('should not be able to define a packet as returned that already is defined as it', async () => {
+    const packet = makePacket({
+      delivererId: undefined,
+      status: 'RETURNED',
+    })
+
+    await inMemoryPacketsRepository.create(packet)
+
+    const result = await sut.execute({
+      packetId: packet.id.toString(),
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })

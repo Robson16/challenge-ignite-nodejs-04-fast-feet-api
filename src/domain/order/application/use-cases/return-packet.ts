@@ -1,4 +1,5 @@
 import { Either, left, right } from '@/core/either'
+import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { PacketsRepository } from '@/domain/order/application/repositories/packets-repository'
 import { Packet } from '@/domain/order/enterprise/entities/packet'
@@ -29,9 +30,7 @@ export class ReturnPacketUseCase {
     }
 
     if (packet.status === 'RETURNED' && packet.delivererId === undefined) {
-      return right({
-        packet,
-      })
+      return left(new NotAllowedError('Packet already returned.'))
     }
 
     packet.delivererId = undefined
