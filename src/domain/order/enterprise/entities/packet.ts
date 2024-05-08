@@ -26,10 +26,6 @@ export class Packet extends Entity<PacketProps> {
   }
 
   set delivererId(delivererId: UniqueEntityID | undefined | null) {
-    if (delivererId === undefined || delivererId === null) {
-      return
-    }
-
     this.props.delivererId = delivererId
 
     this.touch()

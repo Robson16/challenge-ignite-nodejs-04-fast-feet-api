@@ -28,7 +28,7 @@ Nesse desafio foi desenvolvido uma API para controle de encomendas de uma transp
     - [ ] Deve ser possível listar as encomendas com endereços de entrega
           próximo ao local do entregador;
   - [ ] Update;
-     - [ ] Deve ser possível marcar uma encomenda como Aguardando Retirada;
+     - [X] Deve ser possível marcar uma encomenda como Aguardando Retirada; 
      - [X] Deve ser possível marcar uma encomenda como Retirada;
      - [ ] Deve ser possível marcar uma encomenda como Devolvida;
      - [ ] Deve ser possível marcar uma encomenda como Entregue;
