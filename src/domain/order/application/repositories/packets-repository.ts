@@ -18,6 +18,12 @@ export abstract class PacketsRepository {
     filters?: PacketsFilters,
   ): Promise<Packet[]>
 
+  abstract findManyDeliveredByDelivererId(
+    delivererId: string,
+    pagination: PaginationParams,
+    filters?: PacketsFilters,
+  ): Promise<Packet[]>
+
   abstract create(packet: Packet): Promise<void>
   abstract save(packet: Packet): Promise<void>
 }
