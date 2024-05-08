@@ -67,7 +67,7 @@ export class EditUserUseCase {
     const user = await this.usersRepository.findById(userId)
 
     if (!user) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('User not found.'))
     }
 
     if (cpf && !(await this.isCPFValid(cpf))) {

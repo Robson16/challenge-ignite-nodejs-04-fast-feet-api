@@ -31,7 +31,7 @@ export class UpdateUserPasswordUseCase {
     const user = await this.usersRepository.findById(userId)
 
     if (!user) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('User not found.'))
     }
 
     const hashedPassword = await this.hashGenerator.hash(password)

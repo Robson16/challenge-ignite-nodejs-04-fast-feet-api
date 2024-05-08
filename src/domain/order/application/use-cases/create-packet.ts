@@ -35,7 +35,7 @@ export class CreatePacketUseCase {
     destinationId,
   }: CreatePacketUseCaseRequest): Promise<CreatePacketUseCaseResponse> {
     if (!(await this.isDestinationExistent(destinationId))) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('Destination not found.'))
     }
 
     const packet = Packet.create({

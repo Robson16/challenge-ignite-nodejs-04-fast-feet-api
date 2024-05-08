@@ -52,7 +52,7 @@ export class CreateDestinationUseCase {
     const isRecipientExistent = await this.usersRepository.findById(recipientId)
 
     if (!isRecipientExistent) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('Recipient not found.'))
     }
 
     const destination = Destination.create({

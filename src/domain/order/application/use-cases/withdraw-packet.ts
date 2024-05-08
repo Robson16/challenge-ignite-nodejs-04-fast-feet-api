@@ -33,7 +33,7 @@ export class WithdrawalPacketUseCase {
     const deliverer = await this.usersRepository.findById(delivererId)
 
     if (!deliverer) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('Deliverer not found.'))
     }
 
     const packet =
