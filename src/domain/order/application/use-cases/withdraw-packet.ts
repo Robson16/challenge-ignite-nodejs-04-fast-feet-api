@@ -40,7 +40,9 @@ export class WithdrawalPacketUseCase {
       await this.packetsRepository.findAwaitingWithdrawalById(packetId)
 
     if (!packet) {
-      return left(new UnavailablePacketError())
+      return left(
+        new UnavailablePacketError('Packet unavailable to withdrawal'),
+      )
     }
 
     packet.delivererId = new UniqueEntityID(delivererId)
