@@ -37,7 +37,7 @@ export class ReturnPacketUseCase {
     packet.delivererId = undefined
     packet.status = 'RETURNED'
 
-    this.packetsRepository.save(packet)
+    await this.packetsRepository.save(packet)
 
     return right({
       packet,

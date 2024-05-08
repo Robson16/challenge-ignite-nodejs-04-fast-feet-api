@@ -48,7 +48,7 @@ export class WithdrawalPacketUseCase {
     packet.delivererId = new UniqueEntityID(delivererId)
     packet.status = 'WITHDRAWN'
 
-    this.packetsRepository.save(packet)
+    await this.packetsRepository.save(packet)
 
     return right({
       packet,

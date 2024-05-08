@@ -40,7 +40,7 @@ export class DefinePacketAsAwaitingWithdrawalUseCase {
     packet.delivererId = undefined
     packet.status = 'AWAITING_WITHDRAWAL'
 
-    this.packetsRepository.save(packet)
+    await this.packetsRepository.save(packet)
 
     return right({
       packet,
