@@ -30,7 +30,7 @@ Nesse desafio foi desenvolvido uma API para controle de encomendas de uma transp
   - [ ] Update;
      - [X] Deve ser possível marcar uma encomenda como Aguardando Retirada; 
      - [X] Deve ser possível marcar uma encomenda como Retirada;
-     - [ ] Deve ser possível marcar uma encomenda como Devolvida;
+     - [X] Deve ser possível marcar uma encomenda como Devolvida;
      - [ ] Deve ser possível marcar uma encomenda como Entregue;
      - [ ] Deve ser possível notificar o destinatário a cada 
            alteração no status da encomenda;
