@@ -39,10 +39,18 @@ export class InMemoryUsersRepository implements UsersRepository {
   }
 
   async save(user: User) {
-    const itemIndex = this.items.findIndex(
-      (item) => item.id.toString() === user.id.toString(),
-    )
+    const itemIndex = this.items.findIndex((item) => item.id === user.id)
 
-    this.items[itemIndex] = user
+    if (itemIndex !== -1) {
+      this.items[itemIndex] = user
+    }
+  }
+
+  async delete(user: User) {
+    const itemIndex = this.items.findIndex((item) => item.id === user.id)
+
+    if (itemIndex !== -1) {
+      this.items.splice(itemIndex, 1)
+    }
   }
 }

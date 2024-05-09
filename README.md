@@ -9,12 +9,12 @@ Nesse desafio foi desenvolvido uma API para controle de encomendas de uma transp
     - [X] A aplicação deve ter os tipos de usuário: 
           Administrador, Entregador e Destinatário;
     - [X] Deve ser possível registrar um novo usuário
-  - [ ] Read;
+  - [X] Read;
     - [X] Deve ser possível realizar login com CPF e Senha
-    - [ ] Deve ser possível listar as entregas de um usuário
+    - [X] Deve ser possível listar as entregas de um usuário
   - [X] Update;
     - [X] Deve ser possível alterar a senha de um usuário
-  - [ ] Delete;
+  - [X] Delete;
 
 - [ ] CRUD de **Encomendas**:
   - [X] Create;
