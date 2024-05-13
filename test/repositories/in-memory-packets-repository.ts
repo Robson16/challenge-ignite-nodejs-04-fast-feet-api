@@ -149,6 +149,8 @@ export class InMemoryPacketsRepository implements PacketsRepository {
   async save(packet: Packet) {
     const itemIndex = this.items.findIndex((item) => item.id === packet.id)
 
-    this.items[itemIndex] = packet
+    if (itemIndex !== -1) {
+      this.items[itemIndex] = packet
+    }
   }
 }
