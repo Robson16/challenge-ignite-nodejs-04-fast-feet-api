@@ -34,7 +34,7 @@ Nesse desafio foi desenvolvido uma API para controle de encomendas de uma transp
      - [X] Deve ser possível marcar uma encomenda como Entregue;
      - [ ] Deve ser possível notificar o destinatário a cada 
            alteração no status da encomenda;
-  - [ ] Delete;
+  - [X] Delete;
 
 - [ ] CRUD de **Destinos**:
   - [X] Create;

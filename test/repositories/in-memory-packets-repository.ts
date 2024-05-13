@@ -153,4 +153,12 @@ export class InMemoryPacketsRepository implements PacketsRepository {
       this.items[itemIndex] = packet
     }
   }
+
+  async delete(packet: Packet) {
+    const itemIndex = this.items.findIndex((item) => item.id === packet.id)
+
+    if (itemIndex !== -1) {
+      this.items.splice(itemIndex, 1)
+    }
+  }
 }

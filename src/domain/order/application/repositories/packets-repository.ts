@@ -26,4 +26,5 @@ export abstract class PacketsRepository {
 
   abstract create(packet: Packet): Promise<void>
   abstract save(packet: Packet): Promise<void>
+  abstract delete(packet: Packet): Promise<void>
 }
