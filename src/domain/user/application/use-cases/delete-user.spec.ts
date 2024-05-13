@@ -1,6 +1,7 @@
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { DeleteUserUseCase } from './delete-user'
-import { makeUser } from 'test/factories/make-user'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let sut: DeleteUserUseCase // Subject Under Test
@@ -22,5 +23,14 @@ describe('Delete User', () => {
 
     expect(result.isRight()).toBe(true)
     expect(inMemoryUsersRepository.items).toHaveLength(0)
+  })
+
+  it('should not be able to delete a non-existent user', async () => {
+    const result = await sut.execute({
+      userId: 'non-existent-user-id',
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(ResourceNotFoundError)
   })
 })
