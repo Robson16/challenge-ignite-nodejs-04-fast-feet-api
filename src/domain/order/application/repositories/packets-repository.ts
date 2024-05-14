@@ -1,5 +1,6 @@
-import { Packet } from '@/domain/order/enterprise/entities/packet'
 import { PaginationParams } from '@/core/repositories/pagination-params'
+import { Packet } from '@/domain/order/enterprise/entities/packet'
+import { PacketDetails } from '@/domain/order/enterprise/entities/value-objects/packet-details'
 
 export interface PacketsFilters {
   state?: string
@@ -9,6 +10,7 @@ export interface PacketsFilters {
 
 export abstract class PacketsRepository {
   abstract findById(id: string): Promise<Packet | null>
+  abstract findDetailsById(id: string): Promise<PacketDetails | null>
   abstract findAwaitingWithdrawalById(id: string): Promise<Packet | null>
   abstract findManyAwaiting(pagination: PaginationParams): Promise<Packet[]>
 

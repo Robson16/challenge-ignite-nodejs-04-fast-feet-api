@@ -2,16 +2,20 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { makeDestination } from 'test/factories/make-destination'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { CreatePacketUseCase } from './create-packet'
 
+let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
 let inMemoryPacketsRepository: InMemoryPacketsRepository
 let sut: CreatePacketUseCase // Subject Under Test
 
 describe('Create Packet', () => {
   beforeEach(() => {
+    inMemoryUsersRepository = new InMemoryUsersRepository()
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository()
     inMemoryPacketsRepository = new InMemoryPacketsRepository(
+      inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     )
     sut = new CreatePacketUseCase(

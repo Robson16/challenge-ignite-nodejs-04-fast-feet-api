@@ -1,16 +1,19 @@
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { Role } from '@/domain/user/enterprise/entities/value-objects/role'
+import { makeDestination } from 'test/factories/make-destination'
 import { makePacket } from 'test/factories/make-packet'
+import { makeUser } from 'test/factories/make-user'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { DeletePacketUseCase } from './delete-packet'
+import { GetPacketUseCase } from './get-packet'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
 let inMemoryPacketsRepository: InMemoryPacketsRepository
-let sut: DeletePacketUseCase // Subject Under Test
+let sut: GetPacketUseCase // Subject Under Test
 
-describe('Delete Packet', () => {
+describe('Get Packet', () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository()
@@ -18,11 +21,26 @@ describe('Delete Packet', () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     )
-    sut = new DeletePacketUseCase(inMemoryPacketsRepository)
+    sut = new GetPacketUseCase(inMemoryPacketsRepository)
   })
 
-  it('should be able to delete a packet', async () => {
-    const packet = makePacket()
+  it('should be able to get a packet', async () => {
+    const recipient = makeUser({
+      role: Role.create('RECIPIENT'),
+    })
+
+    await inMemoryUsersRepository.create(recipient)
+
+    const destination = makeDestination({
+      recipientId: recipient.id,
+    })
+
+    await inMemoryDestinationsRepository.create(destination)
+
+    const packet = makePacket({
+      destinationId: destination.id,
+      status: 'WITHDRAWN',
+    })
 
     await inMemoryPacketsRepository.create(packet)
 
@@ -31,12 +49,17 @@ describe('Delete Packet', () => {
     })
 
     expect(result.isRight()).toBe(true)
-    expect(inMemoryPacketsRepository.items).toHaveLength(0)
+    expect(result.value).toMatchObject({
+      packet: expect.objectContaining({
+        recipient: recipient.name,
+        status: 'WITHDRAWN',
+      }),
+    })
   })
 
-  it('should not be able to delete a non-existent packet', async () => {
+  it('should not be able to get a non-existing packet', async () => {
     const result = await sut.execute({
-      packetId: 'non-existent-packet-id',
+      packetId: 'non-existing-packet-id',
     })
 
     expect(result.isLeft()).toBe(true)

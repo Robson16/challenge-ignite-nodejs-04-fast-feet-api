@@ -17,6 +17,7 @@ describe('Withdrawal Packet', () => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository()
     inMemoryPacketsRepository = new InMemoryPacketsRepository(
+      inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     )
     sut = new WithdrawalPacketUseCase(

@@ -3,16 +3,20 @@ import { makeDestination } from 'test/factories/make-destination'
 import { makePacket } from 'test/factories/make-packet'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { FetchPacketsWithdrawnByDelivererUseCase } from './fetch-packets-withdrawn-by-deliverer'
 
+let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
 let inMemoryPacketsRepository: InMemoryPacketsRepository
 let sut: FetchPacketsWithdrawnByDelivererUseCase // Subject Under Test
 
 describe('Fetch Packets Withdrawn by Deliverer', () => {
   beforeEach(() => {
+    inMemoryUsersRepository = new InMemoryUsersRepository()
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository()
     inMemoryPacketsRepository = new InMemoryPacketsRepository(
+      inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     )
     sut = new FetchPacketsWithdrawnByDelivererUseCase(inMemoryPacketsRepository)

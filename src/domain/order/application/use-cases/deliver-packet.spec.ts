@@ -1,19 +1,23 @@
+import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { makePacket } from 'test/factories/make-packet'
+import { makeUser } from 'test/factories/make-user'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { DeliverPacketUseCase } from './deliver-packet'
-import { makeUser } from 'test/factories/make-user'
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
 
+let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
 let inMemoryPacketsRepository: InMemoryPacketsRepository
 let sut: DeliverPacketUseCase // Subject Under Test
 
 describe('Deliver Packet', () => {
   beforeEach(() => {
+    inMemoryUsersRepository = new InMemoryUsersRepository()
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository()
     inMemoryPacketsRepository = new InMemoryPacketsRepository(
+      inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     )
     sut = new DeliverPacketUseCase(inMemoryPacketsRepository)

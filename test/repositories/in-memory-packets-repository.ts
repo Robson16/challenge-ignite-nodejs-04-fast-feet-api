@@ -4,12 +4,17 @@ import {
   PacketsRepository,
 } from '@/domain/order/application/repositories/packets-repository'
 import { Packet } from '@/domain/order/enterprise/entities/packet'
+import { PacketDetails } from '@/domain/order/enterprise/entities/value-objects/packet-details'
 import { InMemoryDestinationsRepository } from './in-memory-destinations-repository'
+import { InMemoryUsersRepository } from './in-memory-users-repository'
 
 export class InMemoryPacketsRepository implements PacketsRepository {
   public items: Packet[] = []
 
-  constructor(private destinationsRepository: InMemoryDestinationsRepository) {}
+  constructor(
+    private usersRepository: InMemoryUsersRepository,
+    private destinationsRepository: InMemoryDestinationsRepository,
+  ) {}
 
   async findById(id: string) {
     const packet = this.items.find((item) => item.id.toString() === id)
@@ -19,6 +24,51 @@ export class InMemoryPacketsRepository implements PacketsRepository {
     }
 
     return packet
+  }
+
+  async findDetailsById(id: string) {
+    const packet = this.items.find((item) => item.id.toString() === id)
+
+    if (!packet) {
+      return null
+    }
+
+    const destination = await this.destinationsRepository.findById(
+      packet.destinationId.toString(),
+    )
+
+    if (!destination) {
+      throw new Error(
+        `Destination with ID "${packet.destinationId.toString()}" does not exist.`,
+      )
+    }
+
+    const recipient = await this.usersRepository.findById(
+      destination.recipientId.toString(),
+    )
+
+    if (!recipient) {
+      throw new Error(
+        `Recipient with ID "${destination.recipientId.toString()}" does not exist.`,
+      )
+    }
+
+    return PacketDetails.create({
+      packetId: packet.id,
+      destinationId: packet.destinationId,
+      recipient: recipient.name,
+      addressStreet: destination.addressStreet,
+      addressNumber: destination.addressNumber,
+      addressComplement: destination.addressComplement,
+      addressZipCode: destination.addressZipCode,
+      addressNeighborhood: destination.addressNeighborhood,
+      addressCity: destination.addressCity,
+      addressState: destination.addressState,
+      addressCountry: destination.addressCountry,
+      status: packet.status,
+      createdAt: packet.createdAt,
+      updatedAt: packet.updatedAt,
+    })
   }
 
   async findAwaitingWithdrawalById(id: string) {
