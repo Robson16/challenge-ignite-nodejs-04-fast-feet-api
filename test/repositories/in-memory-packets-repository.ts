@@ -3,7 +3,7 @@ import {
   PacketsFilters,
   PacketsRepository,
 } from '@/domain/order/application/repositories/packets-repository'
-import { Packet } from '@/domain/order/enterprise/entities/packet'
+import { Packet, PacketStatus } from '@/domain/order/enterprise/entities/packet'
 import { PacketDetails } from '@/domain/order/enterprise/entities/value-objects/packet-details'
 import { InMemoryDestinationsRepository } from './in-memory-destinations-repository'
 import { InMemoryUsersRepository } from './in-memory-users-repository'
@@ -84,114 +84,58 @@ export class InMemoryPacketsRepository implements PacketsRepository {
     return packet
   }
 
-  async findManyAwaiting({ page }: PaginationParams) {
+  async findManyByStatus(status: PacketStatus, { page }: PaginationParams) {
+    const startIndex = (page - 1) * 20
+    const endIndex = page * 20
+
     const packets = this.items
-      .filter((item) => item.status === 'AWAITING_WITHDRAWAL')
-      .slice((page - 1) * 20, page * 20)
+      .filter((item) => item.status === status)
+      .slice(startIndex, endIndex)
 
     return packets
   }
 
-  async findManyWithdrawnByDelivererId(
+  async findManyByStatusAndDelivererId(
+    status: PacketStatus,
     delivererId: string,
     { page }: PaginationParams,
     filters?: PacketsFilters,
   ) {
-    let packets = this.items.filter((item) => {
-      if (
-        item.delivererId == null ||
-        item.delivererId.toString() !== delivererId ||
-        item.status !== 'WITHDRAWN'
-      ) {
-        return false
-      }
-
-      return true
-    })
-
-    // Asynchronous filter processing
-    if (filters) {
-      if (filters.neighborhood || filters.city || filters.state) {
-        const filteredPackets = await Promise.all(
-          packets.map(async (packet) => {
-            const destination = await this.destinationsRepository.findById(
-              packet.destinationId.toString(),
-            )
-
-            return { packet, destination }
-          }),
-        )
-
-        packets = filteredPackets
-          .filter(({ destination }) =>
-            destination
-              ? (!filters.neighborhood ||
-                  destination.addressNeighborhood === filters.neighborhood) &&
-                (!filters.city || destination.addressCity === filters.city) &&
-                (!filters.state || destination.addressState === filters.state)
-              : false,
-          )
-          .map(({ packet }) => packet)
-      }
-    }
-
     const startIndex = (page - 1) * 20
     const endIndex = page * 20
 
-    packets = packets.slice(startIndex, endIndex)
+    const packets = this.items.filter((item) => {
+      const matchStatus = item.status === status
+      const matchDelivererId = item.delivererId?.toString() === delivererId
 
-    return packets
-  }
-
-  async findManyDeliveredByDelivererId(
-    delivererId: string,
-    { page }: PaginationParams,
-    filters?: PacketsFilters,
-  ) {
-    let packets = this.items.filter((item) => {
-      if (
-        item.delivererId == null ||
-        item.delivererId.toString() !== delivererId ||
-        item.status !== 'DELIVERED'
-      ) {
-        return false
-      }
-
-      return true
+      return matchStatus && matchDelivererId
     })
 
-    // Asynchronous filter processing
-    if (filters) {
-      if (filters.neighborhood || filters.city || filters.state) {
-        const filteredPackets = await Promise.all(
-          packets.map(async (packet) => {
-            const destination = await this.destinationsRepository.findById(
-              packet.destinationId.toString(),
-            )
-
-            return { packet, destination }
-          }),
-        )
-
-        packets = filteredPackets
-          .filter(({ destination }) =>
-            destination
-              ? (!filters.neighborhood ||
-                  destination.addressNeighborhood === filters.neighborhood) &&
-                (!filters.city || destination.addressCity === filters.city) &&
-                (!filters.state || destination.addressState === filters.state)
-              : false,
+    if (filters && (filters.neighborhood || filters.city || filters.state)) {
+      const filteredPackets = await Promise.all(
+        packets.map(async (packet) => {
+          const destination = await this.destinationsRepository.findById(
+            packet.destinationId.toString(),
           )
-          .map(({ packet }) => packet)
-      }
+
+          return { packet, destination }
+        }),
+      )
+
+      return filteredPackets
+        .filter(({ destination }) =>
+          destination
+            ? (!filters.neighborhood ||
+                destination.addressNeighborhood === filters.neighborhood) &&
+              (!filters.city || destination.addressCity === filters.city) &&
+              (!filters.state || destination.addressState === filters.state)
+            : false,
+        )
+        .map(({ packet }) => packet)
+        .slice(startIndex, endIndex)
     }
 
-    const startIndex = (page - 1) * 20
-    const endIndex = page * 20
-
-    packets = packets.slice(startIndex, endIndex)
-
-    return packets
+    return packets.slice(startIndex, endIndex)
   }
 
   async create(packet: Packet) {

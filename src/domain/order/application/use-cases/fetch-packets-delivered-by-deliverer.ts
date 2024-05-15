@@ -28,7 +28,8 @@ export class FetchPacketsDeliveredByDelivererUseCase {
     page,
     filters,
   }: FetchPacketsDeliveredByDelivererUseCaseRequest): Promise<FetchPacketsDeliveredByDelivererUseCaseResponse> {
-    const packets = await this.packetsRepository.findManyDeliveredByDelivererId(
+    const packets = await this.packetsRepository.findManyByStatusAndDelivererId(
+      'DELIVERED',
       delivererId,
       { page },
       filters,

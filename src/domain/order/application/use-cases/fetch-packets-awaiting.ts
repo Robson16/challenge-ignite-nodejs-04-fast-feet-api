@@ -21,7 +21,10 @@ export class FetchPacketsAwaitingUseCase {
   async execute({
     page,
   }: FetchPacketsAwaitingUseCaseRequest): Promise<FetchPacketsAwaitingUseCaseResponse> {
-    const packets = await this.packetsRepository.findManyAwaiting({ page })
+    const packets = await this.packetsRepository.findManyByStatus(
+      'AWAITING_WITHDRAWAL',
+      { page },
+    )
 
     return right({
       packets,

@@ -28,7 +28,8 @@ export class FetchPacketsWithdrawnByDelivererUseCase {
     page,
     filters,
   }: FetchPacketsWithdrawnByDelivererUseCaseRequest): Promise<FetchPacketsWithdrawnByDelivererUseCaseResponse> {
-    const packets = await this.packetsRepository.findManyWithdrawnByDelivererId(
+    const packets = await this.packetsRepository.findManyByStatusAndDelivererId(
+      'WITHDRAWN',
       delivererId,
       { page },
       filters,
