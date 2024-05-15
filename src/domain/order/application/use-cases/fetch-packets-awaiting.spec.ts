@@ -21,6 +21,7 @@ describe('Fetch Packets Awaiting', () => {
   })
 
   it('should be able to fetch packets', async () => {
+    await inMemoryPacketsRepository.create(makePacket({ status: 'WITHDRAWN' }))
     await inMemoryPacketsRepository.create(
       makePacket({ status: 'AWAITING_WITHDRAWAL' }),
     )

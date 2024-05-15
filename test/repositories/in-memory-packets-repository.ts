@@ -85,7 +85,9 @@ export class InMemoryPacketsRepository implements PacketsRepository {
   }
 
   async findManyAwaiting({ page }: PaginationParams) {
-    const packets = this.items.slice((page - 1) * 20, page * 20)
+    const packets = this.items
+      .filter((item) => item.status === 'AWAITING_WITHDRAWAL')
+      .slice((page - 1) * 20, page * 20)
 
     return packets
   }
