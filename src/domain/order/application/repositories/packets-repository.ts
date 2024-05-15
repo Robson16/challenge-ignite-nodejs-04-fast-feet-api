@@ -8,6 +8,15 @@ export interface PacketsFilters {
   neighborhood?: string
 }
 
+export interface FindManyNearbyByStatusAndDelivererIdParams {
+  status: PacketStatus
+  delivererId: string
+  distance: number
+  latitude: number
+  longitude: number
+  pagination: PaginationParams
+}
+
 export abstract class PacketsRepository {
   abstract findById(id: string): Promise<Packet | null>
   abstract findDetailsById(id: string): Promise<PacketDetails | null>
@@ -23,6 +32,10 @@ export abstract class PacketsRepository {
     delivererId: string,
     pagination: PaginationParams,
     filters?: PacketsFilters,
+  ): Promise<Packet[]>
+
+  abstract findManyNearbyByStatusAndDelivererId(
+    params: FindManyNearbyByStatusAndDelivererIdParams,
   ): Promise<Packet[]>
 
   abstract create(packet: Packet): Promise<void>

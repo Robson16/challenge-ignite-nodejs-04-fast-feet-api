@@ -21,11 +21,11 @@ Nesse desafio foi desenvolvido uma API para controle de encomendas de uma transp
     - [X] As Encomendas devem ter os tipos de status: 
           Aguardando Retirada, Retirada, Devolvida e Entregue;
     - [X] O status Aguardando Retirada deve ser o valor inicial/padrão
-  - [ ] Read;
+  - [X] Read;
     - [X] Deve ser possivel listar encomendas Aguardando Retirada
     - [X] Deve ser possivel listar encomendas Retiradas pelo Entregador
     - [X] Deve ser possivel filtrar as encomendas por bairro
-    - [ ] Deve ser possível listar as encomendas com endereços de entrega
+    - [X] Deve ser possível listar as encomendas com endereços de entrega
           próximo ao local do entregador;
   - [ ] Update;
      - [X] Deve ser possível marcar uma encomenda como Aguardando Retirada; 
