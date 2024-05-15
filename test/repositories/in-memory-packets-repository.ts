@@ -1,5 +1,7 @@
 import { PaginationParams } from '@/core/repositories/pagination-params'
+import { getDistanceBetweenCoordinates } from '@/core/utils/get-distance-between-coodinates'
 import {
+  FindManyNearbyByStatusAndDelivererIdParams,
   PacketsFilters,
   PacketsRepository,
 } from '@/domain/order/application/repositories/packets-repository'
@@ -136,6 +138,54 @@ export class InMemoryPacketsRepository implements PacketsRepository {
     }
 
     return packets.slice(startIndex, endIndex)
+  }
+
+  async findManyNearbyByStatusAndDelivererId(
+    params: FindManyNearbyByStatusAndDelivererIdParams,
+  ): Promise<Packet[]> {
+    const packets = this.items.filter((item) => {
+      const matchStatus = item.status === params.status
+      const matchDelivererId =
+        item.delivererId?.toString() === params.delivererId
+
+      return matchStatus && matchDelivererId
+    })
+
+    const filteredPackets = await Promise.all(
+      packets.map(async (packet) => {
+        const destination = await this.destinationsRepository.findById(
+          packet.destinationId.toString(),
+        )
+
+        if (!destination) {
+          return null
+        }
+
+        const distance = getDistanceBetweenCoordinates(
+          {
+            latitude: params.latitude,
+            longitude: params.longitude,
+          },
+          {
+            latitude: destination.latitude,
+            longitude: destination.longitude,
+          },
+        )
+
+        if (distance <= params.distance) {
+          return packet
+        }
+
+        return null // Explicitly returns null if the packet is not within distance
+      }),
+    )
+
+    const startIndex = (params.pagination.page - 1) * 20
+    const endIndex = params.pagination.page * 20
+
+    return filteredPackets
+      .filter((packet): packet is Packet => packet !== null)
+      .slice(startIndex, endIndex)
   }
 
   async create(packet: Packet) {
