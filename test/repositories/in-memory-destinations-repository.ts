@@ -14,6 +14,14 @@ export class InMemoryDestinationsRepository implements DestinationsRepository {
     return destination
   }
 
+  async save(destination: Destination): Promise<void> {
+    const itemIndex = this.items.findIndex((item) => item.id === destination.id)
+
+    if (itemIndex !== -1) {
+      this.items[itemIndex] = destination
+    }
+  }
+
   async create(destination: Destination) {
     this.items.push(destination)
   }

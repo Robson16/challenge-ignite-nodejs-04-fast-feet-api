@@ -39,7 +39,7 @@ Nesse desafio foi desenvolvido uma API para controle de encomendas de uma transp
 - [ ] CRUD de **Destinos**:
   - [X] Create;
   - [X] Read;
-  - [ ] Update;
+  - [X] Update;
   - [ ] Delete;
 
 ### Regras de negócio
