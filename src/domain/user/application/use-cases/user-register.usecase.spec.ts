@@ -5,7 +5,7 @@ import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repos
 import { InvalidCPFError } from './errors/invalid-cpf-error'
 import { InvalidUserRole } from './errors/invalid-user-role'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
-import { RegisterUserUseCase } from './register-user'
+import { RegisterUserUseCase } from './user-register.usecase'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let fakeHasher: FakeHasher

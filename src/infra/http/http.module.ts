@@ -1,4 +1,4 @@
-import { RegisterUserUseCase } from '@/domain/user/application/use-cases/register-user'
+import { RegisterUserUseCase } from '@/domain/user/application/use-cases/user-register.usecase'
 import { Module } from '@nestjs/common'
 import { CryptographyModule } from '../cryptography/cryptography.module'
 import { DatabaseModule } from '../database/database.module'

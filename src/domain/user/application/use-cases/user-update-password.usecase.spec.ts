@@ -2,7 +2,7 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { UpdateUserPasswordUseCase } from './update-user-password'
+import { UpdateUserPasswordUseCase } from './user-update-password.usecase'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let fakeHasher: FakeHasher

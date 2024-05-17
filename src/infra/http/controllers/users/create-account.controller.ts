@@ -1,5 +1,5 @@
 import { UserAlreadyExistsError } from '@/domain/user/application/use-cases/errors/user-already-exists-error'
-import { RegisterUserUseCase } from '@/domain/user/application/use-cases/register-user'
+import { RegisterUserUseCase } from '@/domain/user/application/use-cases/user-register.usecase'
 import { Public } from '@/infra/auth/public'
 import { ZodValidationPipe } from '@/infra/http/pipes/zod-validation-pipe'
 import {
