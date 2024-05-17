@@ -36,11 +36,11 @@ Nesse desafio foi desenvolvido uma API para controle de encomendas de uma transp
            alteração no status da encomenda;
   - [X] Delete;
 
-- [ ] CRUD de **Destinos**:
+- [X] CRUD de **Destinos**:
   - [X] Create;
   - [X] Read;
   - [X] Update;
-  - [ ] Delete;
+  - [X] Delete;
 
 ### Regras de negócio
 
