@@ -4,14 +4,14 @@ import { makePacket } from 'test/factories/make-packet'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { FetchPacketsDeliveredByDelivererUseCase } from './fetch-packets-delivered-by-deliverer'
+import { FetchPacketsWithdrawnByDelivererUseCase } from './packet-fetch-withdrawn-by-deliverer.usecase'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
 let inMemoryPacketsRepository: InMemoryPacketsRepository
-let sut: FetchPacketsDeliveredByDelivererUseCase // Subject Under Test
+let sut: FetchPacketsWithdrawnByDelivererUseCase // Subject Under Test
 
-describe('Fetch Packets Delivered by Deliverer', () => {
+describe('Fetch Packets Withdrawn by Deliverer', () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository()
@@ -19,30 +19,30 @@ describe('Fetch Packets Delivered by Deliverer', () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     )
-    sut = new FetchPacketsDeliveredByDelivererUseCase(inMemoryPacketsRepository)
+    sut = new FetchPacketsWithdrawnByDelivererUseCase(inMemoryPacketsRepository)
   })
 
-  it('should be able to fetch packets delivered by deliverer', async () => {
+  it('should be able to fetch packets withdrawn by deliverer', async () => {
     const delivererId = new UniqueEntityID()
 
     await inMemoryPacketsRepository.create(
       makePacket({
         delivererId,
-        status: 'DELIVERED',
+        status: 'WITHDRAWN',
       }),
     )
 
     await inMemoryPacketsRepository.create(
       makePacket({
         delivererId,
-        status: 'DELIVERED',
+        status: 'WITHDRAWN',
       }),
     )
 
     await inMemoryPacketsRepository.create(
       makePacket({
         delivererId,
-        status: 'DELIVERED',
+        status: 'WITHDRAWN',
       }),
     )
 
@@ -55,7 +55,7 @@ describe('Fetch Packets Delivered by Deliverer', () => {
     expect(result.value?.packets).toHaveLength(3)
   })
 
-  it('should be able to fetch packets delivered by deliverer and filtered by neighborhood', async () => {
+  it('should be able to fetch packets withdrawn by deliverer and filtered by neighborhood', async () => {
     const delivererId = new UniqueEntityID()
 
     const destination1 = makeDestination()
@@ -68,7 +68,7 @@ describe('Fetch Packets Delivered by Deliverer', () => {
       makePacket({
         delivererId,
         destinationId: destination1.id,
-        status: 'DELIVERED',
+        status: 'WITHDRAWN',
       }),
     )
 
@@ -76,7 +76,7 @@ describe('Fetch Packets Delivered by Deliverer', () => {
       makePacket({
         delivererId,
         destinationId: destination1.id,
-        status: 'DELIVERED',
+        status: 'WITHDRAWN',
       }),
     )
 
@@ -84,7 +84,7 @@ describe('Fetch Packets Delivered by Deliverer', () => {
       makePacket({
         delivererId,
         destinationId: destination2.id,
-        status: 'DELIVERED',
+        status: 'WITHDRAWN',
       }),
     )
 
@@ -92,7 +92,7 @@ describe('Fetch Packets Delivered by Deliverer', () => {
       makePacket({
         delivererId,
         destinationId: destination2.id,
-        status: 'DELIVERED',
+        status: 'WITHDRAWN',
       }),
     )
 
@@ -112,14 +112,14 @@ describe('Fetch Packets Delivered by Deliverer', () => {
     ])
   })
 
-  it('should be able to fetch paginated packets delivered by deliverer', async () => {
+  it('should be able to fetch paginated packets withdrawn by deliverer', async () => {
     const delivererId = new UniqueEntityID()
 
     for (let i = 1; i <= 22; i++) {
       await inMemoryPacketsRepository.create(
         makePacket({
           delivererId,
-          status: 'DELIVERED',
+          status: 'WITHDRAWN',
         }),
       )
     }

@@ -2,7 +2,7 @@ import { makePacket } from 'test/factories/make-packet'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { FetchPacketsAwaitingUseCase } from './fetch-packets-awaiting'
+import { FetchPacketsAwaitingUseCase } from './packet-fetch-awaiting.usecase'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository

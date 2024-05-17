@@ -1,16 +1,16 @@
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { makeDestination } from 'test/factories/make-destination'
+import { makePacket } from 'test/factories/make-packet'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { CreatePacketUseCase } from './create-packet'
+import { DeletePacketUseCase } from './packet-delete.usecase'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
 let inMemoryPacketsRepository: InMemoryPacketsRepository
-let sut: CreatePacketUseCase // Subject Under Test
+let sut: DeletePacketUseCase // Subject Under Test
 
-describe('Create Packet', () => {
+describe('Delete Packet', () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository()
@@ -18,30 +18,25 @@ describe('Create Packet', () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     )
-    sut = new CreatePacketUseCase(
-      inMemoryDestinationsRepository,
-      inMemoryPacketsRepository,
-    )
+    sut = new DeletePacketUseCase(inMemoryPacketsRepository)
   })
 
-  it('should be able to create a packet', async () => {
-    const destination = makeDestination()
+  it('should be able to delete a packet', async () => {
+    const packet = makePacket()
 
-    await inMemoryDestinationsRepository.create(destination)
+    await inMemoryPacketsRepository.create(packet)
 
     const result = await sut.execute({
-      destinationId: destination.id.toString(),
+      packetId: packet.id.toString(),
     })
 
     expect(result.isRight()).toBe(true)
-    expect(inMemoryPacketsRepository.items[0]).toMatchObject({
-      status: 'AWAITING_WITHDRAWAL',
-    })
+    expect(inMemoryPacketsRepository.items).toHaveLength(0)
   })
 
-  it('should not be able to create a packet with an invalid destination', async () => {
+  it('should not be able to delete a non-existent packet', async () => {
     const result = await sut.execute({
-      destinationId: 'invalid-destination-id',
+      packetId: 'non-existent-packet-id',
     })
 
     expect(result.isLeft()).toBe(true)

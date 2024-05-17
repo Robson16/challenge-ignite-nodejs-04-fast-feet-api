@@ -1,26 +1,31 @@
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { makeDestination } from 'test/factories/make-destination'
-import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
-import { GetDestinationUseCase } from './get-destination'
-import { EditDestinationUseCase } from './edit-destination'
 import { faker } from '@faker-js/faker'
+import { makeUser } from 'test/factories/make-user'
+import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
+import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
+import { CreateDestinationUseCase } from './destination-create.usecase'
 
+let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
-let sut: EditDestinationUseCase // Subject Under Test
+let sut: CreateDestinationUseCase // Subject Under Test
 
-describe('Edit Destination', () => {
+describe('Create Destination', () => {
   beforeEach(() => {
+    inMemoryUsersRepository = new InMemoryUsersRepository()
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository()
-    sut = new EditDestinationUseCase(inMemoryDestinationsRepository)
+    sut = new CreateDestinationUseCase(
+      inMemoryUsersRepository,
+      inMemoryDestinationsRepository,
+    )
   })
 
-  it('should be able to edit a destination', async () => {
-    const destination = makeDestination()
+  it('should be able to create a destination', async () => {
+    const user = makeUser()
 
-    await inMemoryDestinationsRepository.create(destination)
+    await inMemoryUsersRepository.create(user)
 
     const result = await sut.execute({
-      destinationId: destination.id.toString(),
+      recipientId: user.id.toString(),
       title: faker.lorem.word(),
       addressStreet: faker.location.street(),
       addressNumber: faker.number.int({ min: 1, max: 9999 }).toString(),
@@ -34,19 +39,14 @@ describe('Edit Destination', () => {
     })
 
     expect(result.isRight()).toBe(true)
-    expect(result.value).toMatchObject({
-      destination: expect.objectContaining({
-        updatedAt: expect.any(Date),
-      }),
-    })
-    expect(inMemoryDestinationsRepository.items[0].updatedAt).toEqual(
-      expect.any(Date),
-    )
+    expect(
+      inMemoryDestinationsRepository.items[0].recipientId.toString(),
+    ).toEqual(user.id.toString())
   })
 
-  it('should not be able to edit a non-existing destination', async () => {
+  it('should not be able to create a destination with an invalid recipient', async () => {
     const result = await sut.execute({
-      destinationId: 'non-existing-destination-id',
+      recipientId: 'invalid-recipient-id',
       title: faker.lorem.word(),
       addressStreet: faker.location.street(),
       addressNumber: faker.number.int({ min: 1, max: 9999 }).toString(),

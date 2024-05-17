@@ -1,7 +1,7 @@
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { makeDestination } from 'test/factories/make-destination'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
-import { DeleteDestinationUseCase } from './delete-destination'
+import { DeleteDestinationUseCase } from './destination-delete.usecase'
 
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
 let sut: DeleteDestinationUseCase // Subject Under Test

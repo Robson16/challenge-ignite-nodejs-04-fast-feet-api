@@ -1,17 +1,19 @@
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { Role } from '@/domain/user/enterprise/entities/value-objects/role'
+import { makeDestination } from 'test/factories/make-destination'
 import { makePacket } from 'test/factories/make-packet'
+import { makeUser } from 'test/factories/make-user'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { DefinePacketAsAwaitingWithdrawalUseCase } from './define-packet-as-awaiting-withdrawal'
+import { GetPacketUseCase } from './packet-get.usecase'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
 let inMemoryPacketsRepository: InMemoryPacketsRepository
-let sut: DefinePacketAsAwaitingWithdrawalUseCase // Subject Under Test
+let sut: GetPacketUseCase // Subject Under Test
 
-describe('Define Packet as Awaiting Withdrawal', () => {
+describe('Get Packet', () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository()
@@ -19,11 +21,24 @@ describe('Define Packet as Awaiting Withdrawal', () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     )
-    sut = new DefinePacketAsAwaitingWithdrawalUseCase(inMemoryPacketsRepository)
+    sut = new GetPacketUseCase(inMemoryPacketsRepository)
   })
 
-  it('should be able to define packet as awaiting withdrawal', async () => {
+  it('should be able to get a packet', async () => {
+    const recipient = makeUser({
+      role: Role.create('RECIPIENT'),
+    })
+
+    await inMemoryUsersRepository.create(recipient)
+
+    const destination = makeDestination({
+      recipientId: recipient.id,
+    })
+
+    await inMemoryDestinationsRepository.create(destination)
+
     const packet = makePacket({
+      destinationId: destination.id,
       status: 'WITHDRAWN',
     })
 
@@ -34,34 +49,20 @@ describe('Define Packet as Awaiting Withdrawal', () => {
     })
 
     expect(result.isRight()).toBe(true)
-    expect(inMemoryPacketsRepository.items[0]).toMatchObject({
-      delivererId: undefined,
-      status: 'AWAITING_WITHDRAWAL',
+    expect(result.value).toMatchObject({
+      packet: expect.objectContaining({
+        recipient: recipient.name,
+        status: 'WITHDRAWN',
+      }),
     })
   })
 
-  it('should not be able to define a non existing packet as awaiting withdrawal', async () => {
+  it('should not be able to get a non-existing packet', async () => {
     const result = await sut.execute({
       packetId: 'non-existing-packet-id',
     })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)
-  })
-
-  it('should not be able to define a packet as awaiting withdrawal that already is defined as it', async () => {
-    const packet = makePacket({
-      delivererId: undefined,
-      status: 'AWAITING_WITHDRAWAL',
-    })
-
-    await inMemoryPacketsRepository.create(packet)
-
-    const result = await sut.execute({
-      packetId: packet.id.toString(),
-    })
-
-    expect(result.isLeft()).toBe(true)
-    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })

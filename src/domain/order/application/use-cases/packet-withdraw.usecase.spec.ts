@@ -5,7 +5,7 @@ import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-dest
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
 import { UnavailablePacketError } from './errors/unavailable-packet-error'
-import { WithdrawalPacketUseCase } from './withdraw-packet'
+import { WithdrawalPacketUseCase } from './packet-withdraw.usecase'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository

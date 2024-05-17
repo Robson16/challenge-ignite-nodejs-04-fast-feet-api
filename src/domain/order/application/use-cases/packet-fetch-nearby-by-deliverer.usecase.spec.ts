@@ -4,7 +4,7 @@ import { makeUser } from 'test/factories/make-user'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { FetchPacketsNearbyByDeliverer } from './fetch-packets-nearby-by-deliverer'
+import { FetchPacketsNearbyByDeliverer } from './packet-fetch-nearby-by-deliverer.usecase'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
