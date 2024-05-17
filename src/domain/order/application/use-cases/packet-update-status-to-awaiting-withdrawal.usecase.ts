@@ -5,12 +5,11 @@ import { PacketsRepository } from '@/domain/order/application/repositories/packe
 import { Packet } from '@/domain/order/enterprise/entities/packet'
 import { Injectable } from '@nestjs/common'
 
-interface DeliverPacketUseCaseRequest {
-  delivererId: string
+interface UpdatePacketStatusToAwaitingWithdrawalUseCaseRequest {
   packetId: string
 }
 
-type DeliverPacketUseCaseResponse = Either<
+type UpdatePacketStatusToAwaitingWithdrawalUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {
     packet: Packet
@@ -18,32 +17,27 @@ type DeliverPacketUseCaseResponse = Either<
 >
 
 @Injectable()
-export class DeliverPacketUseCase {
+export class UpdatePacketStatusToAwaitingWithdrawalUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
-    delivererId,
     packetId,
-  }: DeliverPacketUseCaseRequest): Promise<DeliverPacketUseCaseResponse> {
+  }: UpdatePacketStatusToAwaitingWithdrawalUseCaseRequest): Promise<UpdatePacketStatusToAwaitingWithdrawalUseCaseResponse> {
     const packet = await this.packetsRepository.findById(packetId)
 
     if (!packet) {
       return left(new ResourceNotFoundError('Packet not found.'))
     }
 
-    if (packet.status === 'DELIVERED') {
-      return left(new NotAllowedError('Packet already delivered.'))
-    }
-
     if (
-      packet.status !== 'WITHDRAWN' ||
-      !packet.delivererId ||
-      packet.delivererId.toString() !== delivererId
+      packet.status === 'AWAITING_WITHDRAWAL' &&
+      packet.delivererId === undefined
     ) {
-      return left(new NotAllowedError('No deliverer withdrew this packet.'))
+      return left(new NotAllowedError('Packet already awaiting withdrawal'))
     }
 
-    packet.status = 'DELIVERED'
+    packet.delivererId = undefined
+    packet.status = 'AWAITING_WITHDRAWAL'
 
     await this.packetsRepository.save(packet)
 

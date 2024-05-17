@@ -5,11 +5,11 @@ import { PacketsRepository } from '@/domain/order/application/repositories/packe
 import { Packet } from '@/domain/order/enterprise/entities/packet'
 import { Injectable } from '@nestjs/common'
 
-interface ReturnPacketUseCaseRequest {
+interface UpdatePacketStatusToReturnedUseCaseRequest {
   packetId: string
 }
 
-type ReturnPacketUseCaseResponse = Either<
+type UpdatePacketStatusToReturnedUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     packet: Packet
@@ -17,12 +17,12 @@ type ReturnPacketUseCaseResponse = Either<
 >
 
 @Injectable()
-export class ReturnPacketUseCase {
+export class UpdatePacketStatusToReturnedUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
     packetId,
-  }: ReturnPacketUseCaseRequest): Promise<ReturnPacketUseCaseResponse> {
+  }: UpdatePacketStatusToReturnedUseCaseRequest): Promise<UpdatePacketStatusToReturnedUseCaseResponse> {
     const packet = await this.packetsRepository.findById(packetId)
 
     if (!packet) {

@@ -4,12 +4,12 @@ import { makePacket } from 'test/factories/make-packet'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { ReturnPacketUseCase } from './packet-return.usecase'
+import { UpdatePacketStatusToReturnedUseCase } from './packet-update-status-to-returned.usecase'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
 let inMemoryPacketsRepository: InMemoryPacketsRepository
-let sut: ReturnPacketUseCase // Subject Under Test
+let sut: UpdatePacketStatusToReturnedUseCase // Subject Under Test
 
 describe('Return Packet', () => {
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe('Return Packet', () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     )
-    sut = new ReturnPacketUseCase(inMemoryPacketsRepository)
+    sut = new UpdatePacketStatusToReturnedUseCase(inMemoryPacketsRepository)
   })
 
   it('should be able to return a packet', async () => {

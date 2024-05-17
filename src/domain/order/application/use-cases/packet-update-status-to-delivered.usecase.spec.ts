@@ -1,18 +1,18 @@
+import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { makePacket } from 'test/factories/make-packet'
 import { makeUser } from 'test/factories/make-user'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { UnavailablePacketError } from './errors/unavailable-packet-error'
-import { WithdrawalPacketUseCase } from './packet-withdraw.usecase'
+import { UpdatePacketStatusToDeliveredUseCase } from './packet-update-status-to-delivered.usecase'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
 let inMemoryPacketsRepository: InMemoryPacketsRepository
-let sut: WithdrawalPacketUseCase // Subject Under Test
+let sut: UpdatePacketStatusToDeliveredUseCase // Subject Under Test
 
-describe('Withdrawal Packet', () => {
+describe('Deliver Packet', () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository()
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository()
@@ -20,17 +20,17 @@ describe('Withdrawal Packet', () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     )
-    sut = new WithdrawalPacketUseCase(
-      inMemoryUsersRepository,
-      inMemoryPacketsRepository,
-    )
+    sut = new UpdatePacketStatusToDeliveredUseCase(inMemoryPacketsRepository)
   })
 
-  it('should be able to withdrawal a packet', async () => {
+  it('should be able to deliver a packet', async () => {
     const deliverer = makeUser()
-    const packet = makePacket()
 
-    await inMemoryUsersRepository.create(deliverer)
+    const packet = makePacket({
+      delivererId: deliverer.id,
+      status: 'WITHDRAWN',
+    })
+
     await inMemoryPacketsRepository.create(packet)
 
     const result = await sut.execute({
@@ -40,31 +40,31 @@ describe('Withdrawal Packet', () => {
 
     expect(result.isRight()).toBe(true)
     expect(inMemoryPacketsRepository.items[0]).toMatchObject({
-      status: 'WITHDRAWN',
+      delivererId: deliverer.id,
+      status: 'DELIVERED',
     })
   })
 
-  it('should not be able to withdrawal with a invalid deliverer', async () => {
-    const packet = makePacket()
-
-    await inMemoryPacketsRepository.create(packet)
+  it('should not be able to deliver a non existing packet', async () => {
+    const deliverer = makeUser()
 
     const result = await sut.execute({
-      delivererId: 'invalid-deliverer-id',
-      packetId: packet.id.toString(),
+      delivererId: deliverer.id.toString(),
+      packetId: 'non-existing-packet-id',
     })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(ResourceNotFoundError)
   })
 
-  it('should not be able to withdrawal an unavailable packet', async () => {
+  it('should not be able to deliver a packet not withdrawn by a deliverer', async () => {
     const deliverer = makeUser()
+
     const packet = makePacket({
-      status: 'DELIVERED',
+      delivererId: undefined,
+      status: 'AWAITING_WITHDRAWAL',
     })
 
-    await inMemoryUsersRepository.create(deliverer)
     await inMemoryPacketsRepository.create(packet)
 
     const result = await sut.execute({
@@ -73,6 +73,25 @@ describe('Withdrawal Packet', () => {
     })
 
     expect(result.isLeft()).toBe(true)
-    expect(result.value).toBeInstanceOf(UnavailablePacketError)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
+  })
+
+  it('should not be able to deliver a packet already delivered', async () => {
+    const deliverer = makeUser()
+
+    const packet = makePacket({
+      delivererId: deliverer.id,
+      status: 'DELIVERED',
+    })
+
+    await inMemoryPacketsRepository.create(packet)
+
+    const result = await sut.execute({
+      delivererId: deliverer.id.toString(),
+      packetId: packet.id.toString(),
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })

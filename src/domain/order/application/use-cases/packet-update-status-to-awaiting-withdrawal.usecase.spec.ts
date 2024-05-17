@@ -4,12 +4,12 @@ import { makePacket } from 'test/factories/make-packet'
 import { InMemoryDestinationsRepository } from 'test/repositories/in-memory-destinations-repository'
 import { InMemoryPacketsRepository } from 'test/repositories/in-memory-packets-repository'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { DefinePacketAsAwaitingWithdrawalUseCase } from './packet-define-as-awaiting-withdrawal.usecase'
+import { UpdatePacketStatusToAwaitingWithdrawalUseCase } from './packet-update-status-to-awaiting-withdrawal.usecase'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository
 let inMemoryPacketsRepository: InMemoryPacketsRepository
-let sut: DefinePacketAsAwaitingWithdrawalUseCase // Subject Under Test
+let sut: UpdatePacketStatusToAwaitingWithdrawalUseCase // Subject Under Test
 
 describe('Define Packet as Awaiting Withdrawal', () => {
   beforeEach(() => {
@@ -19,7 +19,9 @@ describe('Define Packet as Awaiting Withdrawal', () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     )
-    sut = new DefinePacketAsAwaitingWithdrawalUseCase(inMemoryPacketsRepository)
+    sut = new UpdatePacketStatusToAwaitingWithdrawalUseCase(
+      inMemoryPacketsRepository,
+    )
   })
 
   it('should be able to define packet as awaiting withdrawal', async () => {

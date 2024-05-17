@@ -7,12 +7,12 @@ import { UsersRepository } from '@/domain/user/application/repositories/users-re
 import { Injectable } from '@nestjs/common'
 import { UnavailablePacketError } from './errors/unavailable-packet-error'
 
-interface WithdrawalPacketUseCaseRequest {
+interface UpdatePacketStatusToWithdrawnUseCaseRequest {
   delivererId: string
   packetId: string
 }
 
-type WithdrawalPacketUseCaseResponse = Either<
+type UpdatePacketStatusToWithdrawnUseCaseResponse = Either<
   ResourceNotFoundError | UnavailablePacketError,
   {
     packet: Packet
@@ -20,7 +20,7 @@ type WithdrawalPacketUseCaseResponse = Either<
 >
 
 @Injectable()
-export class WithdrawalPacketUseCase {
+export class UpdatePacketStatusToWithdrawnUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private packetsRepository: PacketsRepository,
@@ -29,7 +29,7 @@ export class WithdrawalPacketUseCase {
   async execute({
     delivererId,
     packetId,
-  }: WithdrawalPacketUseCaseRequest): Promise<WithdrawalPacketUseCaseResponse> {
+  }: UpdatePacketStatusToWithdrawnUseCaseRequest): Promise<UpdatePacketStatusToWithdrawnUseCaseResponse> {
     const deliverer = await this.usersRepository.findById(delivererId)
 
     if (!deliverer) {
