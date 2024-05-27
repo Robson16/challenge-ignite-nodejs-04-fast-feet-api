@@ -5,12 +5,12 @@ import { Optional } from '@/core/types/optional'
 export type PacketStatus =
   | 'DELIVERED'
   | 'RETURNED'
-  | 'WITHDRAWAL'
+  | 'WITHDRAWN'
   | 'AWAITING_WITHDRAWAL'
 
 export interface PacketProps {
   destinationId: UniqueEntityID
-  delivererId: UniqueEntityID
+  delivererId?: UniqueEntityID
   status: PacketStatus
   createdAt: Date
   updatedAt?: Date | null
@@ -25,8 +25,20 @@ export class Packet extends Entity<PacketProps> {
     return this.props.delivererId
   }
 
+  set delivererId(delivererId: UniqueEntityID | undefined) {
+    this.props.delivererId = delivererId
+
+    this.touch()
+  }
+
   get status() {
     return this.props.status
+  }
+
+  set status(status: PacketStatus) {
+    this.props.status = status
+
+    this.touch()
   }
 
   get createdAt() {
@@ -35,6 +47,10 @@ export class Packet extends Entity<PacketProps> {
 
   get updatedAt() {
     return this.props.updatedAt
+  }
+
+  private touch() {
+    this.props.updatedAt = new Date()
   }
 
   static create(

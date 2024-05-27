@@ -2,9 +2,9 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { makeUser } from 'test/factories/make-user'
 import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { EditUserUseCase } from './edit-user'
 import { InvalidCPFError } from './errors/invalid-cpf-error'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
+import { EditUserUseCase } from './user-edit.usecase'
 
 let inMemoryUsersRepository: InMemoryUsersRepository
 let fakeHasher: FakeHasher
@@ -24,12 +24,12 @@ describe('Edit User', () => {
 
     const result = await sut.execute({
       userId: user.id.toString(),
-      password: '654321',
+      name: 'John Doe',
     })
 
     expect(result.isRight()).toBe(true)
     expect(inMemoryUsersRepository.items[0]).toMatchObject({
-      password: '654321-hashed',
+      name: 'John Doe',
     })
   })
 

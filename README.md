@@ -9,42 +9,51 @@ Nesse desafio foi desenvolvido uma API para controle de encomendas de uma transp
     - [X] A aplicação deve ter os tipos de usuário: 
           Administrador, Entregador e Destinatário;
     - [X] Deve ser possível registrar um novo usuário
-  - [/] Read;
+  - [X] Read;
     - [X] Deve ser possível realizar login com CPF e Senha
-    - [ ] Deve ser possível listar as entregas de um usuário
+    - [X] Deve ser possível listar as entregas de um usuário
   - [X] Update;
     - [X] Deve ser possível alterar a senha de um usuário
-  - [ ] Delete;
+  - [X] Delete;
 
 - [ ] CRUD de **Encomendas**:
   - [X] Create;
-  - [ ] Read;
-     - [ ] Deve ser possível listar as encomendas com endereços de entrega 
-           próximo ao local do entregador;
+    - [X] As Encomendas devem ter os tipos de status: 
+          Aguardando Retirada, Retirada, Devolvida e Entregue;
+    - [X] O status Aguardando Retirada deve ser o valor inicial/padrão
+  - [X] Read;
+    - [X] Deve ser possivel listar encomendas Aguardando Retirada
+    - [X] Deve ser possivel listar encomendas Retiradas pelo Entregador
+    - [X] Deve ser possivel filtrar as encomendas por bairro
+    - [X] Deve ser possível listar as encomendas com endereços de entrega
+          próximo ao local do entregador;
   - [ ] Update;
-     - [ ] Deve ser possível marcar uma encomenda como Entregue;
-     - [ ] Deve ser possível marcar uma encomenda como Devolvida;
-     - [ ] Deve ser possível marcar uma encomenda como Aguardando Retirada;
-     - [ ] Deve ser possível marcar uma encomenda como Retirada;
+     - [X] Deve ser possível marcar uma encomenda como Aguardando Retirada; 
+     - [X] Deve ser possível marcar uma encomenda como Retirada;
+     - [X] Deve ser possível marcar uma encomenda como Devolvida;
+     - [X] Deve ser possível marcar uma encomenda como Entregue;
      - [ ] Deve ser possível notificar o destinatário a cada 
            alteração no status da encomenda;
-  - [ ] Delete;
+  - [X] Delete;
 
-- [ ] CRUD de **Destinatários**:
+- [X] CRUD de **Destinos**:
   - [X] Create;
-  - [ ] Read;
-  - [ ] Update;
-  - [ ] Delete;
+  - [X] Read;
+  - [X] Update;
+  - [X] Delete;
 
 ### Regras de negócio
 
-- Somente usuário do tipo admin pode realizar operações de CRUD nas encomendas
-- Somente usuário do tipo admin pode realizar operações de CRUD dos entregadores
-- Somente usuário do tipo admin pode realizar operações de CRUD dos destinatários
-- Para marcar uma encomenda como entregue é obrigatório o envio de uma foto
-- Somente o entregador que retirou a encomenda pode marcar ela como entregue
-- Somente o admin pode alterar a senha de um usuário
-- Não deve ser possível um entregador listar as encomendas de outro entregador
+- [ ] Somente usuário do tipo Administrador pode realizar 
+  operações de CRUD dos Usuários
+- [ ] Somente o Administrador pode alterar a senha de um Usuário
+- [ ] Somente usuário do tipo Administrador e Entregador pode realizar 
+  operações de CRUD nas Encomendas
+- [ ] Somente usuário do tipo Administrador pode realizar
+  operações de CRUD dos Destinos
+- [ ] Para marcar uma encomenda como entregue é obrigatório o envio de uma foto
+- [X] Somente o Entregador que retirou a Encomenda pode marcar ela como Entregue
+- [X] Não deve ser possível um Entregador listar as Encomendas de outro Entregador
 
 ### Contexto da aplicação
 

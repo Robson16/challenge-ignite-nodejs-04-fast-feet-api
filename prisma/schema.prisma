@@ -7,24 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  ADMIN
-  DELIVERER
-  RECIPIENT
-}
-
 model User {
   id        String    @id @default(uuid())
   name      String
   cpf       String    @unique @default("")
   email     String    @unique
   password  String
-  role      UserRole  @default(DELIVERER)
+  role      String    @default("DELIVERER")
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
-  packets     Packet[]
-  destination Destination[]
+  packets      Packet[]
+  destination  Destination[]
+  notification Notification[]
 
   @@map("users")
 }
@@ -32,37 +27,56 @@ model User {
 enum PacketStatus {
   DELIVERED
   RETURNED
-  WITHDRAWAL
+  WITHDRAWN
   AWAITING_WITHDRAWAL
 }
 
 model Packet {
-  id        String       @id @default(uuid())
-  status    PacketStatus @default(AWAITING_WITHDRAWAL)
-  createdAt DateTime     @default(now()) @map("created_at")
-  updatedAt DateTime?    @updatedAt @map("updated_at")
+  id            String       @id @default(uuid())
+  status        PacketStatus @default(AWAITING_WITHDRAWAL)
+  delivererId   String?      @unique @map("deliverer_at")
+  destinationId String       @unique @map("destination_at")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime?    @updatedAt @map("updated_at")
 
-  destination    Destination @relation(fields: [destination_id], references: [id])
-  destination_id String
-
-  deliverer    User   @relation(fields: [deliverer_id], references: [id])
-  deliverer_id String
+  deliverer   User?       @relation(fields: [delivererId], references: [id])
+  destination Destination @relation(fields: [destinationId], references: [id])
 
   @@map("packets")
 }
 
 model Destination {
-  id        String    @id @default(uuid())
-  title     String
-  latitude  Decimal
-  longitude Decimal
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
+  id                  String    @id @default(uuid())
+  recipientId         String    @unique @map("recipient_id")
+  title               String
+  addressStreet       String    @map("address_street")
+  addressNumber       String    @map("address_number")
+  addressComplement   String    @map("address_complement")
+  addressZipCode      String    @map("address_zip_code")
+  addressNeighborhood String    @map("address_neighborhood")
+  addressCity         String    @map("address_city")
+  addressState        String    @map("address_state")
+  addressCountry      String    @default("Brazil") @map("address_country")
+  latitude            Decimal
+  longitude           Decimal
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime? @updatedAt @map("updated_at")
 
-  recipient    User   @relation(fields: [recipient_id], references: [id])
-  recipient_id String
-
-  packets Packet[]
+  recipient User     @relation(fields: [recipientId], references: [id])
+  packets   Packet[]
 
   @@map("destinations")
+}
+
+model Notification {
+  id          String    @id @default(uuid())
+  recipientId String    @map("recipient_id")
+  title       String
+  content     String
+  readAt      DateTime? @map("read_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  recipient User @relation(fields: [recipientId], references: [id])
+
+  @@map("notifications")
 }

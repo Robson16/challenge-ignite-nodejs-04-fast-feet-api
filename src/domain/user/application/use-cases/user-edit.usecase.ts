@@ -1,7 +1,8 @@
 import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { User, UserRole } from '@/domain/user/enterprise/entities/user'
+import { User } from '@/domain/user/enterprise/entities/user'
 import { CPF } from '@/domain/user/enterprise/entities/value-objects/cpf'
+import { Role } from '@/domain/user/enterprise/entities/value-objects/role'
 import { Injectable } from '@nestjs/common'
 import { HashGenerator } from '../cryptography/hash-generator'
 import { UsersRepository } from '../repositories/users-repository'
@@ -15,7 +16,7 @@ interface EditUserUseCaseRequest {
   cpf?: string
   email?: string
   password?: string
-  role?: UserRole
+  role?: string
 }
 
 type EditUserUseCaseResponse = Either<
@@ -51,8 +52,8 @@ export class EditUserUseCase {
     return !!user
   }
 
-  private isValidRole(role: UserRole): boolean {
-    return role === 'ADMIN' || role === 'DELIVERER'
+  private isValidRole(role: string): boolean {
+    return Role.validate(role)
   }
 
   async execute({
@@ -66,7 +67,7 @@ export class EditUserUseCase {
     const user = await this.usersRepository.findById(userId)
 
     if (!user) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('User not found.'))
     }
 
     if (cpf && !(await this.isCPFValid(cpf))) {
@@ -93,7 +94,7 @@ export class EditUserUseCase {
     user.cpf = cpf ? CPF.create(cpf) : user.cpf
     user.email = email || user.email
     user.password = hashedPassword
-    user.role = role || user.role
+    user.role = role ? Role.create(role) : user.role
 
     await this.usersRepository.save(user)
 
