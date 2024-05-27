@@ -17,8 +17,9 @@ model User {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
-  packets     Packet[]
-  destination Destination[]
+  packets      Packet[]
+  destination  Destination[]
+  notification Notification[]
 
   @@map("users")
 }
@@ -65,4 +66,17 @@ model Destination {
   packets   Packet[]
 
   @@map("destinations")
+}
+
+model Notification {
+  id          String    @id @default(uuid())
+  recipientId String    @map("recipient_id")
+  title       String
+  content     String
+  readAt      DateTime? @map("read_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  recipient User @relation(fields: [recipientId], references: [id])
+
+  @@map("notifications")
 }
