@@ -34,8 +34,8 @@ enum PacketStatus {
 model Packet {
   id            String       @id @default(uuid())
   status        PacketStatus @default(AWAITING_WITHDRAWAL)
-  delivererId   String?      @unique @map("deliverer_at")
-  destinationId String       @unique @map("destination_at")
+  delivererId   String?      @unique @map("deliverer_id")
+  destinationId String       @unique @map("destination_id")
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime?    @updatedAt @map("updated_at")
 
