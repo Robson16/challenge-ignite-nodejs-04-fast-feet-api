@@ -39,6 +39,16 @@ A **FastFeet API** fornece funcionalidades para gerenciar entregas, transportado
 
 - Criação, leitura, atualização e exclusão de destinos.
 
+### 🚧 Funcionalidades Pendentes
+
+- Notificação do destinatário a cada alteração no status da encomenda.
+- Envio de foto obrigatório ao marcar uma encomenda como entregue.
+- Restrições de acesso mais rigorosas:
+  - Apenas administradores podem gerenciar usuários e destinos.
+  - Apenas administradores e entregadores podem gerenciar encomendas.
+- Proteção contra acesso a dados de outros usuários, garantindo total privacidade.
+- Validações adicionais de regras de negócio.
+
 ## 📜 Regras de Negócio
 
 - Somente Administradores podem realizar operações de CRUD de Usuários e Destinos.
@@ -108,7 +118,7 @@ A API foi projetada para ser consumida por interfaces web e/ou móveis. Confira 
 Execute os testes para garantir o funcionamento da API:
 
 ```bash
-    npm run test
+npm run test
 ```
 
 Para obter o relatório de cobertura:
