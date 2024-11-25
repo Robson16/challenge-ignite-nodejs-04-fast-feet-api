@@ -39,7 +39,7 @@ A **FastFeet API** fornece funcionalidades para gerenciar entregas, transportado
 
 - Criação, leitura, atualização e exclusão de destinos.
 
-### 🚧 Funcionalidades Pendentes
+## 🚧 Funcionalidades Pendentes
 
 - Notificação do destinatário a cada alteração no status da encomenda.
 - Envio de foto obrigatório ao marcar uma encomenda como entregue.
