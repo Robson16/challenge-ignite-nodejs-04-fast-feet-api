@@ -108,7 +108,7 @@ A API foi projetada para ser consumida por interfaces web e/ou móveis. Confira 
 Execute os testes para garantir o funcionamento da API:
 
 ```bash
-    npm run test
+npm run test
 ```
 
 Para obter o relatório de cobertura:
