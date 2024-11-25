@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -11,5 +11,5 @@ services:
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: fast-feet
       PGDATA: /data/postgres
-    volumes:  
+    volumes:
       - ./data/pg:/data/postgres
